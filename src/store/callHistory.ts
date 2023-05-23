@@ -30,22 +30,28 @@ function setCallHistory({
   }
 }
 
-function getCallHistory(): Array<{
-  number: string
-  duration: string
-  date: string
-}> {
+function getCallHistory(
+  page: number,
+  perPage: number
+): {
+  history: Array<{
+    number: string
+    duration: string
+    date: string
+  }>
+  totalPages: number
+} {
   const callHistoryRaw = localStorage.getItem('@vcallwidget:callhistory')
   if (!callHistoryRaw) {
-    return []
+    return { history: [], totalPages: 0 }
   }
   const callHistory = JSON.parse(callHistoryRaw)
+  const startIndex = (page - 1) * perPage
+  const endIndex = startIndex + perPage
 
-  if (Array.isArray(callHistory)) {
-    return callHistory
-  }
-
-  return []
+  const paginatedHistory = Array.isArray(callHistory) ? callHistory.slice(startIndex, endIndex) : []
+  const totalPages = Math.ceil(callHistory.length / perPage)
+  return { history: paginatedHistory, totalPages }
 }
 
 export { setCallHistory, getCallHistory }

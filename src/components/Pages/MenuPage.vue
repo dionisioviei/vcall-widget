@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch, watchEffect } from 'vue';
+import { onMounted, onUnmounted, ref, watch, watchEffect } from 'vue';
 import { PhPhoneCall, PhSignIn, PhNotebook, PhArrowLeft, PhUser } from "@phosphor-icons/vue";
 import CloseButton from '../CloseButton.vue';
 import CallPage from './CallPage.vue';
@@ -7,7 +7,7 @@ import LoginPage from './LoginPage.vue';
 import HistoryPage from './HistoryPage.vue';
 import { getCredentials } from '../../store/credentials';
 
-const { authuser, name } = getCredentials();
+const nameHeader = ref<null | string>('');
 
 const props = defineProps<{
     agentStatus: string; callDuration: null | number; inCallStatus: {
@@ -56,6 +56,18 @@ function changePage(page: RouteName) {
     activePage.value = page;
 }
 
+onMounted(() => {
+    const { authuser, name } = getCredentials();
+    nameHeader.value = name || authuser;
+})
+
+watch(props, () => {
+    if (props.agentStatus === 'Conectado') {
+        const { authuser, name } = getCredentials();
+        nameHeader.value = name || authuser;
+    }
+});
+
 watchEffect(() => {
     if (['Em chamada', 'Recebendo chamada'].includes(props.agentStatus) && activePage.value !== 'Call') {
         changePage('Call');
@@ -66,7 +78,7 @@ watchEffect(() => {
 
 <template>
     <div
-        class='bg-zinc-900 p-4 relative rounded-2xl mb-4 flex flex-col items-center shadow-lg w-[calc(100vw-2rem)] md:w-auto'>
+        class='bg-zinc-900 p-4 relative rounded-2xl mb-4 flex flex-col items-center shadow-md shadow-slate-800 w-[calc(100vw-2rem)] md:w-auto'>
         <header>
             <button
                 v-show="activePage !== 'Menu' && ['Em chamada', 'Recebendo chamada'].includes(props.agentStatus) === false"
@@ -75,7 +87,7 @@ watchEffect(() => {
                 <PhArrowLeft weight='bold' />
             </button>
             <span class='text-xl leading-6 flex flex-row justify-center items-center'>
-                <PhUser class="mr-2" />{{ authuser || name || 'Conecte-se para ligar' }}
+                <PhUser class="mr-2" />{{ nameHeader || 'Conecte-se para ligar' }}
             </span>
 
             <CloseButton />
@@ -107,7 +119,7 @@ watchEffect(() => {
                 <span>{{ props.agentStatus }}</span>
             </div>
             Feito com <b class="animate-pulse">♥</b> pela <a href='https://vittelgroup.com.br/produtos' target='_blank'
-                class='underline underline-offset-2 hover:text-zinc-100 text-xs'>Vittel</a>
+                class='underline underline-offset-2 hover:text-zinc-100 text-xs'>@Vittel</a>
 
         </footer>
     </div>

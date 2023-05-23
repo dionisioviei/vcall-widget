@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
-import { PhPhoneCall } from "@phosphor-icons/vue";
+import { onMounted, ref, watch, watchEffect } from 'vue';
+import { PhPhoneCall, PhArrowCircleLeft, PhArrowCircleRight } from "@phosphor-icons/vue";
 import { getCallHistory } from '../../store/callHistory';
 
 const callHistory = ref<null | Array<{
@@ -8,16 +8,23 @@ const callHistory = ref<null | Array<{
     duration: string;
     date: string;
 }>>(null);
+const maxPages = ref(0);
+const currentPage = ref(1);
+const perPage = ref(20);
 
 const props = defineProps<{ show: boolean; }>()
 
 onMounted(() => {
-    callHistory.value = getCallHistory();
+    const { history, totalPages } = getCallHistory(currentPage.value, perPage.value);
+    callHistory.value = history;
+    maxPages.value = totalPages;
 });
 
 watch(props, () => {
     if (props.show) {
-        callHistory.value = getCallHistory();
+        const { history, totalPages } = getCallHistory(currentPage.value, perPage.value);
+        callHistory.value = history;
+        maxPages.value = totalPages;
     }
 });
 
@@ -28,6 +35,25 @@ function handleDate(date: string) {
     return new Date(date).toLocaleString().replace(',', ' ás');
 }
 
+function handlePageChange(el: any) {
+    if (el.target.value === '' || isNaN(parseInt(el.target.value))) {
+        return;
+    }
+    if (parseInt(el.target.value) > maxPages.value || parseInt(el.target.value) <= 0) {
+        return;
+    }
+    currentPage.value = el.target.value ? el.target.value : '1'
+    return;
+}
+
+watchEffect(() => {
+    if (currentPage.value <= maxPages.value && currentPage.value > 0) {
+        const { history, totalPages } = getCallHistory(currentPage.value, perPage.value);
+        callHistory.value = history;
+        maxPages.value = totalPages;
+    }
+})
+
 </script>
 
 <template>
@@ -35,10 +61,35 @@ function handleDate(date: string) {
         <span class='text-xl leading-6 flex items-center gap-2 my-4'>
             Chamadas Recentes
         </span>
+        <div v-show="callHistory && callHistory?.length > 0"
+            class="w-full flex flex-row gap-1 min-w-[350px] justify-center items-center">
+            <button type="button"
+                class="hover:outline-blue-500 hover:outline outline-none rounded-md active:bg-zinc-800 transition-colors"
+                @click="() => currentPage = currentPage <= 1 ? maxPages : currentPage - 1">
+                <PhArrowCircleLeft :size="24" />
+            </button>
+            <input type="number"
+                class="w-[52px] hover:outline-blue-500 hover:outline outline-none rounded-md bg-zinc-800 text-center appearance-none"
+                placeholder="1" @keyup="handlePageChange" :value="currentPage" />
+            <span class="text-xl font-bold">/</span>
+            <input type="text"
+                class="w-[52px] font-bold hover:outline-blue-500 hover:outline outline-none rounded-md bg-zinc-800 text-center italic"
+                v-model="maxPages" disabled />
+            <button
+                class="hover:outline-blue-500 hover:outline outline-none rounded-md active:bg-zinc-800 transition-colors"
+                type="button" @click="() => currentPage = currentPage >= maxPages ? 1 : currentPage + 1">
+                <PhArrowCircleRight :size="24" />
+            </button>
 
-        <div class='my-4 w-full flex flex-col gap-2 min-w-[350px] rounded-lg'>
-            <ul class=" text-zinc-200 p-4 rounded-md max-h-[250px] overflow-scroll">
-                <li class="w-full mb-1 flex flex-row justify-between items-center gap-2 p-2 hover:outline-zinc-500 hover:outline outline-none rounded-md bg-zinc-800"
+        </div>
+
+
+        <div class='my-4 w-full flex flex-col gap-2 min-w-[425px] rounded-lg'>
+            <ul
+                class="scroll-smooth text-zinc-200 p-4 max-h-[250px] overflow-scroll overflow-x-hidden scrollbar-thumb-zinc-700 scrollbar-track-transparent scrollbar-thin">
+                <span v-show="callHistory && callHistory.length <= 0" class="italic w-full text-center"> Nenhuma chamada
+                </span>
+                <li class="w-full mb-1 flex flex-row justify-between items-center p-2 hover:outline-blue-500 hover:outline outline-none rounded-md bg-zinc-800"
                     v-for="call in callHistory" :key="call.date.toLocaleString()">
                     <span class="flex flex-row justify-center items-center gap-1">
                         <PhPhoneCall :size="20" /> {{ call.number }} <span class="italic text-zinc-500">{{
@@ -47,8 +98,19 @@ function handleDate(date: string) {
                     </span> <span class="text-zinc-400">
                         {{ handleDate(call.date) }}</span>
                 </li>
-
             </ul>
+
         </div>
     </div>
 </template>
+<style>
+.scrollbar-thin {
+    scrollbar-width: auto;
+}
+
+.appearance-none {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: textfield;
+}
+</style>

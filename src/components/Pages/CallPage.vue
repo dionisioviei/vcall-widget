@@ -42,7 +42,14 @@ watchEffect(() => {
 });
 
 watchEffect(() => {
-    console.log('NOT INCALL CHECK', props.inCallStatus.inCall, lastNumberTalked.value, lastCallDuration.value, lastCallDate.value);
+    if (props.inCallStatus.inCall && props.inCallStatus.status?.callDirection === 'incoming' && !lastNumberTalked.value) {
+        lastNumberTalked.value = props.inCallStatus.status?.number;
+        lastCallDate.value = new Date();
+        lastCallDuration.value = props.callDuration;
+    }
+});
+
+watchEffect(() => {
     if (!props.inCallStatus.inCall && lastNumberTalked.value && lastCallDuration.value && lastCallDate.value) {
         console.log('SETTING CALL HISTORY');
         setCallHistory({
@@ -100,15 +107,17 @@ onUnmounted(() => {
                 </span>
             </span>
             <div class='flex py-8 gap-2 w-full'>
-                <button type='button' class='bg-zinc-800 rounded-lg py-5 w-24 flex flex-1 flex-col justify-center items-center gap-2 border-2 border-transparent
+                <button type='button' class='rounded-lg py-5 w-24 flex flex-1 flex-col justify-center items-center gap-2 border-2 border-transparent
                 hover:border-blue-500 focus:outline-none focus:border-blue-500 transition-all duration-400 ease-linear'
-                    :class="{ 'bg-orange-500': props.inCallStatus.status?.onHold }" @click="props.toggleHold">
+                    :class="{ 'bg-orange-500': props.inCallStatus.status?.onHold, 'bg-zinc-800': !props.inCallStatus.status?.onHold }"
+                    @click="props.toggleHold">
                     <PhPause :size="32" />
                     <span>{{ props.inCallStatus.status?.onHold ? 'Em espera' : 'Espera' }}</span>
                 </button>
-                <button type='button' class='bg-zinc-800 rounded-lg py-5 w-28 flex flex-1 flex-col justify-center items-center gap-2 border-2 border-transparent
+                <button type='button' class='rounded-lg py-5 w-28 flex flex-1 flex-col justify-center items-center gap-2 border-2 border-transparent
                 hover:border-blue-500 focus:outline-none focus:border-blue-500 transition-all duration-400 ease-linear'
-                    :class="{ 'bg-orange-500': props.inCallStatus.status?.muted }" @click="props.toggleMute">
+                    :class="{ 'bg-orange-500': props.inCallStatus.status?.muted, 'bg-zinc-800': !props.inCallStatus.status?.muted }"
+                    @click="props.toggleMute">
                     <component :is="props.inCallStatus.status?.muted ? PhMicrophoneSlash : PhMicrophone" :size="32" />
                     <span>{{ props.inCallStatus.status?.muted ? 'Mudo' : 'Mutar' }}</span>
                 </button>
@@ -138,7 +147,7 @@ onUnmounted(() => {
                     props.inCallStatus.status?.number }}</span>
             </span>
             <div class='flex py-8 gap-2 w-full'>
-                <button type='button' class='bg-zinc-800 rounded-lg py-5 w-24 flex flex-1 flex-col justify-center items-center gap-2 border-2 border-transparent
+                <button type='button' class='bg-green-800 rounded-lg py-5 w-24 flex flex-1 flex-col justify-center items-center gap-2 border-2 border-transparent
                 hover:border-blue-500 focus:outline-none focus:border-blue-500 transition-all duration-400 ease-linear'
                     @click="props.answer">
                     <PhPhoneCall :size="32" />
