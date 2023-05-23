@@ -183,12 +183,12 @@ onUnmounted(() => {
     </transition>
 
     <PopoverButton title='FeedBack' aria-label='FeedBack' id="popoverbutton"
-      class='bg-blue-500 rounded-full px-3 h-12 text-white flex items-center group shadow-[0_0.5rem_1.5rem_#8257e540]'
+      class='bg-blue-500 rounded-full px-2 h-14 text-white flex items-center group shadow-[0_0.5rem_1.5rem_#8257e540]'
       :class="{ 'animate-pulse bg-orange-500': ['Recebendo chamada', 'Em chamada'].includes(agentStatus) }">
       <ph-phone :size="32" />
 
       <span
-        class='max-w-0 truncate group-hover:max-w-xl transition-all duration-500 ease-linear text-clip overflow-hidden'
+        class='max-w-0 truncate group-hover:max-w-xl transition-all duration-500 ease-in-out text-clip overflow-hidden'
         :class="{ 'max-w-xl': ['Recebendo chamada', 'Em chamada'].includes(agentStatus) }">
         <span class='pl-2' />
         {{ agentStatus === 'Em chamada' ? `Em chamada ${formatTime(callDuration || 0)} ` :
