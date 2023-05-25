@@ -10,7 +10,7 @@ const dtmfCommand = ref('');
 const focusTimeout = ref<null | number>(null);
 
 const props = defineProps<{
-    show: boolean; callDuration: null | number; agentStatus: string; inCallStatus: {
+    show: boolean; callDuration: null | number; extenStatus: string; agentStatus: string; inCallStatus: {
         inCall: boolean;
         status?: {
             muted: boolean;
@@ -74,15 +74,15 @@ onUnmounted(() => {
             <div class='flex py-8 gap-2 w-full'>
                 <button type='button' class='rounded-lg py-5 w-24 flex flex-1 flex-col justify-center items-center gap-2 border-2 border-transparent
                 hover:border-blue-500 focus:outline-none focus:border-blue-500 transition-all duration-400 ease-linear'
-                    :class="{ 'bg-orange-500': props.inCallStatus.status?.onHold, 'bg-zinc-800': !props.inCallStatus.status?.onHold }"
-                    @click="props.toggleHold">
+                    :class="{ 'bg-orange-500': props.inCallStatus.status?.onHold, 'bg-zinc-800': !props.inCallStatus.status?.onHold, 'opacity-50 cursor-not-allowed': props.extenStatus !== 'incall' }"
+                    @click="props.toggleHold" :disabled="props.extenStatus !== 'incall'">
                     <PhPause :size="32" />
                     <span>{{ props.inCallStatus.status?.onHold ? 'Em espera' : 'Espera' }}</span>
                 </button>
                 <button type='button' class='rounded-lg py-5 w-28 flex flex-1 flex-col justify-center items-center gap-2 border-2 border-transparent
                 hover:border-blue-500 focus:outline-none focus:border-blue-500 transition-all duration-400 ease-linear'
-                    :class="{ 'bg-orange-500': props.inCallStatus.status?.muted, 'bg-zinc-800': !props.inCallStatus.status?.muted }"
-                    @click="props.toggleMute">
+                    :class="{ 'bg-orange-500': props.inCallStatus.status?.muted, 'bg-zinc-800': !props.inCallStatus.status?.muted, 'opacity-50 cursor-not-allowed': props.extenStatus !== 'incall' }"
+                    @click="props.toggleMute" :disabled="props.extenStatus !== 'incall'">
                     <component :is="props.inCallStatus.status?.muted ? PhMicrophoneSlash : PhMicrophone" :size="32" />
                     <span>{{ props.inCallStatus.status?.muted ? 'Mudo' : 'Mutar' }}</span>
                 </button>
@@ -92,7 +92,8 @@ onUnmounted(() => {
                         required />
                     <button type='button' class='bg-zinc-800 rounded-b-lg py-2 w-28 flex flex-1 flex-col items-center gap-2 border-2 border-transparent
                 hover:border-blue-500 focus:outline-none focus:border-blue-500 transition-all duration-400 ease-linear'
-                        @click="props.sendDTMF(dtmfCommand)">
+                        :class="{ 'opacity-50 cursor-not-allowed': props.extenStatus !== 'incall' }"
+                        @click="props.sendDTMF(dtmfCommand)" :disabled="props.extenStatus !== 'incall'">
                         <PhCommand :size="32" />
                         <span>Discar</span>
                     </button>

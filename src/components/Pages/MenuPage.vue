@@ -10,7 +10,7 @@ import { getCredentials } from '../../store/credentials';
 const nameHeader = ref<null | string>('');
 
 const props = defineProps<{
-    agentStatus: string; callDuration: null | number; inCallStatus: {
+    agentStatus: string; callDuration: null | number; extenStatus: string; inCallStatus: {
         inCall: boolean;
         status?: {
             muted: boolean;
@@ -107,7 +107,8 @@ watchEffect(() => {
 
         <CallPage :show="activePage === 'Call'" :answer="props.answer" :hangup="props.hangup" :sendDTMF="props.sendDTMF"
             :toggleHold="props.toggleHold" :toggleMute="props.toggleMute" :startCall="props.startCall"
-            :inCallStatus="props.inCallStatus" :callDuration="callDuration" :agentStatus="props.agentStatus" />
+            :inCallStatus="props.inCallStatus" :callDuration="callDuration" :agentStatus="props.agentStatus"
+            :extenStatus="props.extenStatus" />
         <LoginPage :show="activePage === 'Login'" :register="props.register" :unregister="props.unregister" />
         <HistoryPage :show="activePage === 'History'" />
 
