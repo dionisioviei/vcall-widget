@@ -116,9 +116,10 @@ watchEffect(() => {
                 </span>
                 <li class="w-full mb-1 flex flex-col justify-between items-center p-2 hover:outline-blue-500 hover:outline outline-none rounded-md bg-zinc-800 group"
                     v-for="(call, index) in callHistory" :key="call.date.toLocaleString()"
-                    :class="{ 'border-b-2': index === 0 && currentPage === 1 }">
+                    :class="{ 'border-b-2': index === 0 && currentPage === 1 && call.duration !== '00:00:00' }">
                     <div class="flex flex-row justify-between items-start w-full">
-                        <span class="flex flex-row justify-center items-center gap-1">
+                        <span class="flex flex-row justify-center items-center gap-1"
+                            :class="{ 'text-red-400': call.duration === '00:00:00' }">
                             <component
                                 :is="call.callDirection ? (call.callDirection === 'incoming' ? PhPhoneIncoming : PhPhoneOutgoing) : PhPhoneCall"
                                 :size="20" /> {{ call.number }} <span class="italic text-zinc-500">{{
@@ -129,7 +130,7 @@ watchEffect(() => {
                             {{ handleDate(call.date) }}
                         </span>
                     </div>
-                    <span v-if="index === 0 && lastCallAudio && currentPage === 1"
+                    <span v-if="index === 0 && lastCallAudio && currentPage === 1 && call.duration !== '00:00:00'"
                         class="rounded-md truncate max-h-0 group-hover:max-h-12 transition-all duration-250 ease-in overflow-hidden">
                         <audio id="lastCallAudioPlayer" ref="lastCallAudioPlayer" class="rounded-md"
                             style="background: transparent;" controls>

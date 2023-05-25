@@ -4,7 +4,7 @@ import { PhPhone } from "@phosphor-icons/vue";
 import MenuPage from './Pages/MenuPage.vue';
 import { useWebphone } from "@vittelgroup/vwebphone";
 import { getCredentials } from '../store/credentials';
-import { setLastCallRecording } from '../store/callHistory';
+import { setLastCallRecording, setCallHistory } from '../store/callHistory';
 import { computed, onMounted, onUnmounted, ref, watch, watchEffect } from 'vue';
 import { formatTime } from '../utils/formatTime';
 import { useNotification } from '../utils/useNotification';
@@ -21,8 +21,13 @@ const isStatic = ref(false);
 const mediaRecorder = ref<null | MediaRecorder>(null);
 const recordedChunks = ref<Blob[]>([]);
 
-const [isGranted, sendNotification] = useNotification();
+// Handle call history
+const lastCallDuration = ref<null | number>(null);
+const lastNumberTalked = ref<null | string>(null);
+const lastCallDate = ref<null | Date>(null);
+const lastCallDirection = ref<"incoming" | "outgoing" | null>(null);
 
+const [isGranted, sendNotification] = useNotification();
 
 const alertCallAudio = ref<null | HTMLAudioElement>(null);
 const alertIncomingCallAudio = ref<null | HTMLAudioElement>(null);
@@ -52,20 +57,6 @@ const {
   debug: 'all'
 });
 
-watch(janusStatus, () => {
-  console.warn({ janusStatus: janusStatus.value })
-  if (authuser && secret && domain && janusStatus.value === 'connected') {
-    register({
-      authuser,
-      secret,
-      port,
-      domain,
-      transport,
-      name: name || authuser
-    });
-  }
-});
-
 const agentStatus = computed(() => {
   switch (registerStatus.value) {
     case 'registered':
@@ -89,6 +80,51 @@ const agentStatus = computed(() => {
       return 'Registro falhou';
     default:
       return 'Desconectado';
+  }
+});
+
+
+watchEffect(() => {
+  if (['Em chamada', 'Recebendo chamada'].includes(agentStatus.value) && lastNumberTalked.value === null && inCallStatus.value.status) {
+    lastNumberTalked.value = inCallStatus.value.status.number;
+    lastCallDate.value = new Date();
+    lastCallDirection.value = inCallStatus.value.status.callDirection;
+    lastCallDuration.value = 0;
+  }
+});
+
+watchEffect(() => {
+  if (callDuration.value) {
+    lastCallDuration.value = callDuration.value;
+  }
+});
+
+watchEffect(() => {
+  if (!['Em chamada', 'Recebendo chamada'].includes(agentStatus.value) && lastNumberTalked.value && lastCallDuration.value !== null && lastCallDate.value && lastCallDirection.value) {
+    setCallHistory({
+      number: lastNumberTalked.value,
+      date: lastCallDate.value,
+      duration: formatTime(lastCallDuration.value),
+      callDirection: lastCallDirection.value
+    });
+    lastNumberTalked.value = null;
+    lastCallDate.value = null;
+    lastCallDuration.value = null;
+    lastCallDirection.value = null;
+  }
+});
+
+watch(janusStatus, () => {
+  console.warn({ janusStatus: janusStatus.value })
+  if (authuser && secret && domain && janusStatus.value === 'connected') {
+    register({
+      authuser,
+      secret,
+      port,
+      domain,
+      transport,
+      name: name || authuser
+    });
   }
 });
 

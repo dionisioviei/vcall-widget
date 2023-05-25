@@ -2,15 +2,10 @@
 import { onUnmounted, ref, watchEffect } from 'vue';
 import { PhPhoneCall, PhDotOutline, PhPause, PhMicrophoneSlash, PhPhoneDisconnect, PhCommand, PhMicrophone } from "@phosphor-icons/vue";
 import { formatTime } from '../../utils/formatTime';
-import { setCallHistory } from '../../store/callHistory';
 
 const numberToCall = ref('');
 const numberToCallInput = ref<HTMLInputElement | null>(null);
 const dtmfCommand = ref('');
-const lastCallDuration = ref<null | number>(null);
-const lastNumberTalked = ref<null | string>(null);
-const lastCallDate = ref<null | Date>(null);
-const lastCallDirection = ref<"incoming" | "outgoing" | null>(null);
 
 const focusTimeout = ref<null | number>(null);
 
@@ -32,42 +27,7 @@ const props = defineProps<{
 
 function handleCall() {
     props.startCall(numberToCall.value);
-    lastNumberTalked.value = numberToCall.value;
-    lastCallDate.value = new Date();
-    lastCallDirection.value = 'outgoing';
 }
-
-watchEffect(() => {
-    if (props.callDuration) {
-        lastCallDuration.value = props.callDuration;
-    }
-});
-
-watchEffect(() => {
-    if (props.inCallStatus.inCall && props.inCallStatus.status?.callDirection === 'incoming' && !lastNumberTalked.value) {
-        lastNumberTalked.value = props.inCallStatus.status?.number;
-        lastCallDate.value = new Date();
-        lastCallDuration.value = props.callDuration;
-        lastCallDirection.value = props.inCallStatus.status.callDirection;
-    }
-});
-
-watchEffect(() => {
-    if (!props.inCallStatus.inCall && lastNumberTalked.value && lastCallDuration.value && lastCallDate.value && lastCallDirection.value) {
-        console.log('SETTING CALL HISTORY');
-        setCallHistory({
-            number: lastNumberTalked.value,
-            date: lastCallDate.value,
-            duration: formatTime(lastCallDuration.value),
-            callDirection: lastCallDirection.value
-        });
-        lastNumberTalked.value = null;
-        lastCallDate.value = null;
-        lastCallDuration.value = null;
-        lastCallDirection.value = null;
-    }
-});
-
 
 watchEffect(() => {
     if (props.show && numberToCallInput.value) {
