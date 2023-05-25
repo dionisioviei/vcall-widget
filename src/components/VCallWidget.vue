@@ -5,7 +5,7 @@ import MenuPage from './Pages/MenuPage.vue';
 import { useWebphone } from "@vittelgroup/vwebphone";
 import { getCredentials } from '../store/credentials';
 import { setLastCallRecording, setCallHistory } from '../store/callHistory';
-import { computed, onMounted, onUnmounted, ref, watch, watchEffect } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch, watchEffect, onBeforeUnmount } from 'vue';
 import { formatTime } from '../utils/formatTime';
 import { useNotification } from '../utils/useNotification';
 
@@ -242,6 +242,19 @@ function openPopover() {
   }
 }
 
+function autoUnregister() {
+  console.warn('UNREGISTERING');
+  unregister();
+}
+
+onMounted(() => {
+  window.addEventListener('beforeunload', autoUnregister);
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('beforeunload', autoUnregister);
+});
+
 onUnmounted(() => {
   callDurationTimer.value && clearTimeout(callDurationTimer.value);
 });
@@ -257,7 +270,7 @@ onUnmounted(() => {
       <PopoverPanel :static="isStatic">
         <MenuPage :agentStatus="agentStatus" :register="register" :unregister="unregister" :answer="answer"
           :hangup="hangup" :inCallStatus="inCallStatus" :sendDTMF="sendDTMF" :startCall="startCall"
-          :toggleHold="toggleHold" :callDuration="callDuration" :toggleMute="toggleMute" />
+          :toggleHold="toggleHold" :callDuration="callDuration" :toggleMute="toggleMute" :extenStatus="extenStatus" />
       </PopoverPanel>
     </transition>
 
