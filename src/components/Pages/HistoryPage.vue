@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref, watch, watchEffect } from 'vue';
-import { PhPhoneCall, PhArrowCircleLeft, PhArrowCircleRight, PhArrowBendRightDown } from "@phosphor-icons/vue";
+import { PhPhoneCall, PhArrowCircleLeft, PhArrowCircleRight, PhArrowBendRightDown, PhPhoneIncoming, PhPhoneOutgoing } from "@phosphor-icons/vue";
 import { getCallHistory, getLastCallRecording } from '../../store/callHistory';
 
 const callHistory = ref<null | Array<{
     number: string;
     duration: string;
     date: string;
+    callDirection: string | null;
 }>>(null);
 const maxPages = ref(0);
 const currentPage = ref(1);
@@ -118,9 +119,11 @@ watchEffect(() => {
                     :class="{ 'border-b-2': index === 0 && currentPage === 1 }">
                     <div class="flex flex-row justify-between items-start w-full">
                         <span class="flex flex-row justify-center items-center gap-1">
-                            <PhPhoneCall :size="20" /> {{ call.number }} <span class="italic text-zinc-500">{{
-                                call.duration
-                            }}</span>
+                            <component
+                                :is="call.callDirection ? (call.callDirection === 'incoming' ? PhPhoneIncoming : PhPhoneOutgoing) : PhPhoneCall"
+                                :size="20" /> {{ call.number }} <span class="italic text-zinc-500">{{
+                                    call.duration
+                                }}</span>
                         </span>
                         <span class="text-zinc-400">
                             {{ handleDate(call.date) }}

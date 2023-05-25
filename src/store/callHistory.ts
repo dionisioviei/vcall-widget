@@ -3,11 +3,13 @@ import { encode, decode } from 'js-base64'
 function setCallHistory({
   number,
   duration,
-  date
+  date,
+  callDirection
 }: {
   number: string
   duration: string
   date: Date
+  callDirection: string | null
 }) {
   let newCallHistory
   const prevCallHistoryRaw = localStorage.getItem('@vcallwidget:callhistory')
@@ -16,17 +18,17 @@ function setCallHistory({
     const prevCallHistory = JSON.parse(prevCallHistoryRaw)
     if (Array.isArray(prevCallHistory)) {
       newCallHistory = [
-        { number, duration, date },
+        { number, duration, date, callDirection },
         ...prevCallHistory.filter((call, index) => index <= 2000)
       ]
     } else {
-      newCallHistory = [{ number, duration, date }]
+      newCallHistory = [{ number, duration, date, callDirection }]
     }
 
     localStorage.setItem('@vcallwidget:callhistory', JSON.stringify(newCallHistory))
     return
   } else {
-    newCallHistory = [{ number, duration, date }]
+    newCallHistory = [{ number, duration, date, callDirection }]
     localStorage.setItem('@vcallwidget:callhistory', JSON.stringify(newCallHistory))
     return
   }
@@ -40,6 +42,7 @@ function getCallHistory(
     number: string
     duration: string
     date: string
+    callDirection: string | null
   }>
   totalPages: number
 } {
