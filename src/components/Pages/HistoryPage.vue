@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch, watchEffect } from 'vue';
-import { PhPhoneCall, PhArrowCircleLeft, PhArrowCircleRight } from "@phosphor-icons/vue";
-import { getCallHistory } from '../../store/callHistory';
+import { PhPhoneCall, PhArrowCircleLeft, PhArrowCircleRight, PhArrowBendRightDown } from "@phosphor-icons/vue";
+import { getCallHistory, getLastCallRecording } from '../../store/callHistory';
 
 const callHistory = ref<null | Array<{
     number: string;
@@ -11,6 +11,8 @@ const callHistory = ref<null | Array<{
 const maxPages = ref(0);
 const currentPage = ref(1);
 const perPage = ref(20);
+const lastCallAudio = ref<string | null>(null);
+const lastCallAudioPlayer = ref<null | HTMLAudioElement[]>(null);
 
 const props = defineProps<{ show: boolean; }>()
 
@@ -25,6 +27,11 @@ watch(props, () => {
         const { history, totalPages } = getCallHistory(currentPage.value, perPage.value);
         callHistory.value = history;
         maxPages.value = totalPages;
+        lastCallAudio.value = getLastCallRecording();
+    } else {
+        if (lastCallAudioPlayer.value && lastCallAudioPlayer.value[0]) {
+            lastCallAudioPlayer.value[0].pause();
+        }
     }
 });
 
@@ -53,6 +60,19 @@ watchEffect(() => {
         maxPages.value = totalPages;
     }
 })
+
+watchEffect(() => {
+    if (lastCallAudioPlayer.value && lastCallAudio.value && currentPage.value === 1) {
+        const url = lastCallAudio.value;
+        if (lastCallAudioPlayer.value[0]) {
+            lastCallAudioPlayer.value[0].src = url;
+            lastCallAudioPlayer.value[0].currentTime = 0;
+        }
+
+    }
+});
+
+
 
 </script>
 
@@ -89,14 +109,31 @@ watchEffect(() => {
                 class="scroll-smooth text-zinc-200 p-4 max-h-[250px] overflow-scroll overflow-x-hidden scrollbar-thumb-zinc-700 scrollbar-track-transparent scrollbar-thin">
                 <span v-show="callHistory && callHistory.length <= 0" class="italic w-full text-center"> Nenhuma chamada
                 </span>
-                <li class="w-full mb-1 flex flex-row justify-between items-center p-2 hover:outline-blue-500 hover:outline outline-none rounded-md bg-zinc-800"
-                    v-for="call in callHistory" :key="call.date.toLocaleString()">
-                    <span class="flex flex-row justify-center items-center gap-1">
-                        <PhPhoneCall :size="20" /> {{ call.number }} <span class="italic text-zinc-500">{{
-                            call.duration
-                        }}</span>
-                    </span> <span class="text-zinc-400">
-                        {{ handleDate(call.date) }}</span>
+                <span v-show="callHistory && callHistory.length > 0 && currentPage === 1"
+                    class="flex flex-row items-center justify-start">Última chamada
+                    <PhArrowBendRightDown :size="20" />
+                </span>
+                <li class="w-full mb-1 flex flex-col justify-between items-center p-2 hover:outline-blue-500 hover:outline outline-none rounded-md bg-zinc-800 group"
+                    v-for="(call, index) in callHistory" :key="call.date.toLocaleString()"
+                    :class="{ 'border-b-2': index === 0 && currentPage === 1 }">
+                    <div class="flex flex-row justify-between items-start w-full">
+                        <span class="flex flex-row justify-center items-center gap-1">
+                            <PhPhoneCall :size="20" /> {{ call.number }} <span class="italic text-zinc-500">{{
+                                call.duration
+                            }}</span>
+                        </span>
+                        <span class="text-zinc-400">
+                            {{ handleDate(call.date) }}
+                        </span>
+                    </div>
+                    <span v-if="index === 0 && lastCallAudio && currentPage === 1"
+                        class="rounded-md truncate max-h-0 group-hover:max-h-12 transition-all duration-250 ease-in overflow-hidden">
+                        <audio id="lastCallAudioPlayer" ref="lastCallAudioPlayer" class="rounded-md"
+                            style="background: transparent;" controls>
+                            <source type="audio/ogg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </span>
                 </li>
             </ul>
 

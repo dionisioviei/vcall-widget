@@ -83,7 +83,8 @@ watchEffect(() => {
             <button
                 v-show="activePage !== 'Menu' && ['Em chamada', 'Recebendo chamada'].includes(props.agentStatus) === false"
                 type='button' title='Voltar' aria-label='Voltar' @click="changePage('Menu')"
-                className='top-5 left-5 absolute text-zinc-400 hover:text-zinc-100'>
+                className='top-5 left-5 absolute text-zinc-400 hover:text-zinc-100 flex flex-row-reverse justify-center items-center'>
+                Voltar
                 <PhArrowLeft weight='bold' />
             </button>
             <span class='text-xl leading-6 flex flex-row justify-center items-center'>
@@ -111,15 +112,16 @@ watchEffect(() => {
         <HistoryPage :show="activePage === 'History'" />
 
         <footer class='text-xs text-neutral-400 w-full text-center'>
-            <div class="w-full text-white border-t-2 text-center border-b-2 py-2 rounded-lg px-1 mb-2" :class="{
-                'border-green-700 bg-green-700': props.agentStatus === 'Conectado',
-                'border-red-700 bg-red-700': ['Registro falhou', 'Desconectado'].includes(props.agentStatus),
-                'border-orange-700 bg-orange-700 animate-pulse': ['Desconectando', 'Conectando...', 'Em chamada', 'Recebendo chamada'].includes(props.agentStatus),
-            }">
+            <div class="w-full text-white border-t-2 text-center border-b-2 py-2 rounded-lg px-1 mb-2 tracking-wider"
+                :class="{
+                    'border-green-700 bg-green-700': props.agentStatus === 'Conectado',
+                    'border-red-700 bg-red-700': ['Registro falhou', 'Desconectado'].includes(props.agentStatus),
+                    'border-orange-700 bg-orange-700 animate-pulse': ['Desconectando', 'Conectando...', 'Em chamada', 'Recebendo chamada'].includes(props.agentStatus),
+                }">
                 <span>{{ props.agentStatus }}</span>
             </div>
-            Feito com <b class="animate-pulse">♥</b> pela <a href='https://vittelgroup.com.br/produtos' target='_blank'
-                class='underline underline-offset-2 hover:text-zinc-100 text-xs'>@Vittel</a>
+            Feito com <b class="animate-pulse">♥</b> pela <a href='https://digital.vittel.com.br/vittel-cloud-talk/'
+                target='_blank' class='underline underline-offset-2 hover:text-blue-400 text-xs'>Vittel</a>
 
         </footer>
     </div>

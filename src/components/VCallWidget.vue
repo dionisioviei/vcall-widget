@@ -4,7 +4,8 @@ import { PhPhone } from "@phosphor-icons/vue";
 import MenuPage from './Pages/MenuPage.vue';
 import { useWebphone } from "@vittelgroup/vwebphone";
 import { getCredentials } from '../store/credentials';
-import { computed, onUnmounted, ref, watch, watchEffect } from 'vue';
+import { setLastCallRecording } from '../store/callHistory';
+import { computed, onMounted, onUnmounted, ref, watch, watchEffect } from 'vue';
 import { formatTime } from '../utils/formatTime';
 import { useNotification } from '../utils/useNotification';
 
@@ -17,6 +18,8 @@ const remoteStream = ref<HTMLMediaElement | null>(null);
 const callDuration = ref<null | number>(null);
 const callDurationTimer = ref<null | number>(null);
 const isStatic = ref(false);
+const mediaRecorder = ref<null | MediaRecorder>(null);
+const recordedChunks = ref<Blob[]>([]);
 
 const [isGranted, sendNotification] = useNotification();
 
@@ -90,7 +93,7 @@ const agentStatus = computed(() => {
 });
 
 function startTimer() {
-  if (inCallStatus.value.inCall) {
+  if (inCallStatus.value.inCall && extenStatus.value === 'incall') {
     callDurationTimer.value = setTimeout(() => {
       callDuration.value = (callDuration.value || 0) + 1;
       startTimer();
@@ -121,11 +124,12 @@ watchEffect(() => {
     }
   }
 
-  if (agentStatus.value === 'Em chamada' && extenStatus.value === 'incall' && alertIncomingCallAudio.value) {
+  if (extenStatus.value === 'incall' && alertIncomingCallAudio.value) {
     alertIncomingCallAudio.value.pause();
     alertIncomingCallAudio.value = null;
     isStatic.value = false;
     openPopover();
+    mediaRecorder.value?.start();
   }
 
   if (extenStatus.value !== 'incomingcall' && alertIncomingCallAudio.value) {
@@ -133,14 +137,19 @@ watchEffect(() => {
     alertIncomingCallAudio.value = null;
     isStatic.value = false;
   }
+  if (extenStatus.value === 'idle') {
+    mediaRecorder.value?.stop();
+    mediaRecorder.value === null;
+  }
 });
 
 watchEffect(() => {
-  if (agentStatus.value === 'Em chamada' && alertCallAudio.value === null && extenStatus.value === 'calling') {
+  if (alertCallAudio.value === null && extenStatus.value === 'calling') {
     alertCallAudio.value = playCallingSound();
   }
 
-  if (agentStatus.value === 'Em chamada' && alertCallAudio.value && extenStatus.value === 'incall') {
+  if (alertCallAudio.value && extenStatus.value === 'incall') {
+    mediaRecorder.value?.start();
     alertCallAudio.value.pause();
     alertCallAudio.value = null;
   }
@@ -148,6 +157,40 @@ watchEffect(() => {
   if (extenStatus.value !== 'calling' && alertCallAudio.value) {
     alertCallAudio.value.pause();
     alertCallAudio.value = null;
+  }
+
+  if (extenStatus.value === 'idle') {
+    mediaRecorder.value?.stop();
+    mediaRecorder.value === null;
+  }
+
+});
+
+watchEffect(() => {
+  if (localStream.value && remoteStream.value && mediaRecorder.value === null) {
+    const audioContext = new AudioContext();
+
+    const localMediaStreamSource = audioContext.createMediaElementSource(localStream.value);
+    const remoteMediaStreamSource = audioContext.createMediaElementSource(remoteStream.value);
+
+    const destination = audioContext.createMediaStreamDestination();
+    localMediaStreamSource.connect(destination);
+    remoteMediaStreamSource.connect(destination);
+
+    const recordedStream = new MediaStream()
+    recordedStream.addTrack(destination.stream.getAudioTracks()[0]);
+
+    mediaRecorder.value = new MediaRecorder(recordedStream);
+    mediaRecorder.value.ondataavailable = (event) => {
+      recordedChunks.value.push(event.data);
+    };
+
+    mediaRecorder.value.onstop = () => {
+      const recordedBlob = new Blob(recordedChunks.value, { type: 'audio/webm' });
+      recordedChunks.value = [];
+      setLastCallRecording(recordedBlob);
+
+    };
   }
 });
 

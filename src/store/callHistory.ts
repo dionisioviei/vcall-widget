@@ -1,3 +1,5 @@
+import { encode, decode } from 'js-base64'
+
 function setCallHistory({
   number,
   duration,
@@ -54,4 +56,24 @@ function getCallHistory(
   return { history: paginatedHistory, totalPages }
 }
 
-export { setCallHistory, getCallHistory }
+function setLastCallRecording(blob: Blob) {
+  const reader = new FileReader()
+  reader.onloadend = () => {
+    const dataURL = reader.result
+    if (dataURL && typeof dataURL === 'string') {
+      localStorage.removeItem('@vcallwidget:lastCallRecorded')
+      localStorage.setItem('@vcallwidget:lastCallRecorded', dataURL)
+    }
+  }
+  reader.readAsDataURL(blob)
+}
+
+function getLastCallRecording() {
+  const dataURL = localStorage.getItem('@vcallwidget:lastCallRecorded')
+  if (dataURL) {
+    return dataURL
+  }
+  return null
+}
+
+export { setCallHistory, getCallHistory, setLastCallRecording, getLastCallRecording }
