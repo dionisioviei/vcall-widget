@@ -38,7 +38,40 @@ function setCredentials({
   localStorage.setItem('@vcallwidget:name', name)
 }
 
+function credentialsInURL() {
+  const urlParams = new URLSearchParams(window.location.search)
+
+  const authuser = urlParams.get('authuser')
+  const name = urlParams.get('name')
+  const secret = urlParams.get('secret')
+  const port = urlParams.get('port')
+  const domain = urlParams.get('domain')
+  const transport = (urlParams.get('transport') as null | 'udp' | 'tcp') || 'udp'
+
+  console.log({ authuser, name, secret, port, domain, transport })
+
+  if (authuser && secret && port && domain && transport) {
+    return {
+      name: name || authuser,
+      authuser,
+      secret,
+      port: parseInt(port) || 5060,
+      domain,
+      transport
+    }
+  }
+
+  return null
+}
+
 function getCredentials() {
+  const urlCredentials = credentialsInURL()
+  console.log({ urlCredentials })
+
+  if (urlCredentials) {
+    return urlCredentials
+  }
+
   const authuser = localStorage.getItem('@vcallwidget:authuser')
   const name = localStorage.getItem('@vcallwidget:name')
   const scrambledSecret = localStorage.getItem('@vcallwidget:secret')
