@@ -8,8 +8,8 @@ dependencies:
     specifier: ^2.0.1
     version: 2.0.1(vue@3.3.2)
   '@vittelgroup/vwebphone':
-    specifier: ^1.1.0
-    version: 1.1.0
+    specifier: ^1.2.0
+    version: 1.2.0
   js-base64:
     specifier: ^3.7.5
     version: 3.7.5
@@ -928,8 +928,8 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
-  /@vittelgroup/vwebphone@1.1.0:
-    resolution: {integrity: sha512-YopVI3rpdBUf98rVDiwXKcbjdWb1+AkECra/Atb4anjm4LdIPppINqz5fsNa+AOuBybhdZdwXCWKcw3YJzI1+w==, tarball: https://npm.pkg.github.com/download/@vittelgroup/vwebphone/1.1.0/cf772151422e2501f08609355af6bb37e5292c73}
+  /@vittelgroup/vwebphone@1.2.0:
+    resolution: {integrity: sha512-4hjuNn4amJTvONs906dr1gvpmsv3Iv8Ma1JDRYAzLXkAOrcUdOiX4c0ojfwoY1oroImrCiEH/CeOcU/HPmuK/Q==, tarball: https://npm.pkg.github.com/download/@vittelgroup/vwebphone/1.2.0/8d1dcc1eed2e1e3ddc978b5f79e772d3aa56ff57}
     dependencies:
       vue: 3.3.2
       webrtc-adapter: 7.7.1

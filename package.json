@@ -4,7 +4,7 @@
   "private": true,
   "main": "src/main.ts",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --force",
     "build": "run-p type-check build-only",
     "preview": "vite preview",
     "test:unit": "vitest",
@@ -21,7 +21,7 @@
   "dependencies": {
     "@headlessui/vue": "^1.7.13",
     "@phosphor-icons/vue": "^2.0.1",
-    "@vittelgroup/vwebphone": "^1.1.0",
+    "@vittelgroup/vwebphone": "^1.2.0",
     "js-base64": "^3.7.5",
     "vue": "^3.3.2"
   },

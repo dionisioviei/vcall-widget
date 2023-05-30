@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onUnmounted, ref } from 'vue';
-import { PhFloppyDisk, PhSpinner } from "@phosphor-icons/vue";
+import { computed, onUnmounted, ref, watchEffect } from 'vue';
+import { PhFloppyDisk, PhSpinner, PhSignIn, PhSignOut } from "@phosphor-icons/vue";
 import { getCredentials, setCredentials } from '../../store/credentials';
 
 const { authuser, domain, name, port, secret, transport } = getCredentials();
@@ -10,9 +10,7 @@ const authName = ref(name || '');
 const authSecret = ref(secret || '');
 const authDomain = ref(domain || '');
 const authPort = ref(port);
-const registering = ref(false);
-const registerBtnTimeout = ref<null | number>(null);
-const sendRegisterTimeout = ref<null | number>(null);
+const unregistering = ref(false);
 
 const props = defineProps<{
     show: boolean; register: ({ authuser, secret, domain, port, name, transport, }: {
@@ -22,13 +20,11 @@ const props = defineProps<{
         port: number;
         name: string;
         transport: "udp" | "tcp";
-    }) => void; unregister: () => void
+    }) => void; unregister: () => void; agentStatus: string;
 }>();
 
 
 function handleSubmit() {
-    props.unregister();
-    registering.value = true;
     setCredentials({
         authuser: authUsername.value,
         domain: authDomain.value,
@@ -37,22 +33,29 @@ function handleSubmit() {
         secret: authSecret.value,
         transport: transport
     });
-    sendRegisterTimeout.value = setTimeout(() => {
-        props.register({
-            authuser: authUsername.value,
-            domain: authDomain.value,
-            name: authName.value || name || authUsername.value,
-            port: authPort.value,
-            secret: authSecret.value,
-            transport: transport
-        });
-    }, 1000);
-    registerBtnTimeout.value = setTimeout(() => registering.value = false, 1500);
+    props.register({
+        authuser: authUsername.value,
+        domain: authDomain.value,
+        name: authName.value || name || authUsername.value,
+        port: authPort.value,
+        secret: authSecret.value,
+        transport: transport
+    });
 }
 
-onUnmounted(() => {
-    registerBtnTimeout.value && clearTimeout(registerBtnTimeout.value);
-    sendRegisterTimeout.value && clearTimeout(sendRegisterTimeout.value);
+function handleLogout() {
+    props.unregister();
+}
+
+watchEffect(() => {
+    console.log('unregistering', unregistering.value, props.agentStatus);
+    if (unregistering.value && props.agentStatus === 'Desconectado') {
+        unregistering.value = false;
+    }
+});
+
+const registering = computed(() => {
+    return ['Conectando...'].includes(props.agentStatus)
 });
 
 </script>
@@ -79,12 +82,21 @@ onUnmounted(() => {
 
                 <button type='submit' title='Salvar' aria-labelledby='Salvar'
                     class='bg-zinc-800 rounded-lg py-1 w-24 flex flex-1 flex-row items-center justify-center gap-2 border-2 border-transparent
-                hover:border-blue-500 focus:outline-none focus:border-blue-500 transition-all duration-400 ease-linear disabled:opacity-50 disabled:border-2'
-                    :disabled="registering">
-                    <component :is="registering ? PhSpinner : PhFloppyDisk" :size="20"
+                hover:border-blue-500 hover:text-green-500 disabled:hover:text-zinc-100 focus:outline-none focus:border-blue-500 transition-all duration-400 ease-linear disabled:opacity-50 disabled:border-2'
+                    :disabled="registering || props.agentStatus === 'Conectado' || props.agentStatus === 'Desconectando'">
+                    <component :is="registering ? PhSpinner : PhSignIn" :size="20"
                         :class="{ 'animate-spin': registering }" />{{ registering
                             ? 'Registrando' :
-                            'Salvar' }}
+                            'Conectar' }}
+                </button>
+                <button type='button' title='Desconectar' aria-labelledby='Desconectar' @click="handleLogout"
+                    class='bg-zinc-800 rounded-lg py-1 w-24 flex flex-1 flex-row items-center justify-center gap-2 border-2 border-transparent
+                hover:border-blue-500 hover:text-red-500 disabled:hover:text-zinc-100 focus:outline-none focus:border-blue-500 transition-all duration-400 ease-linear disabled:opacity-50 disabled:border-2'
+                    :disabled="unregistering || ['Desconectado', 'Registro falhou'].includes(props.agentStatus)">
+                    <component :is="unregistering ? PhSpinner : PhSignOut" :size="20"
+                        :class="{ 'animate-spin': unregistering }" />{{ unregistering
+                            ? 'Desconectando' :
+                            'Desconectar' }}
                 </button>
             </footer>
         </form>

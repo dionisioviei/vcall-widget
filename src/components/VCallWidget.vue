@@ -37,7 +37,6 @@ const {
   register,
   unregister,
   answer,
-  error,
   extenStatus,
   hangup,
   inCallStatus,
@@ -54,7 +53,8 @@ const {
   janusServer: 'agent.vcmpbx.com.br',
   localStreamElement: localStream,
   remoteStreamElement: remoteStream,
-  debug: 'all'
+  debug: 'minimal',
+  registerTimeout: 10,
 });
 
 const agentStatus = computed(() => {
@@ -242,18 +242,18 @@ function openPopover() {
   }
 }
 
-function autoUnregister() {
-  console.warn('UNREGISTERING');
-  unregister();
-}
+// function autoUnregister() {
+//   console.warn('UNREGISTERING');
+//   unregister();
+// }
 
-onMounted(() => {
-  window.addEventListener('beforeunload', autoUnregister);
-})
+// onMounted(() => {
+//   window.addEventListener('beforeunload', autoUnregister);
+// })
 
-onBeforeUnmount(() => {
-  window.removeEventListener('beforeunload', autoUnregister);
-});
+// onBeforeUnmount(() => {
+//   window.removeEventListener('beforeunload', autoUnregister);
+// });
 
 onUnmounted(() => {
   callDurationTimer.value && clearTimeout(callDurationTimer.value);
