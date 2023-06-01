@@ -46,9 +46,10 @@ function credentialsInURL() {
   const secret = urlParams.get('secret')
   const port = urlParams.get('port')
   const domain = urlParams.get('domain')
-  const transport = (urlParams.get('transport') as null | 'udp' | 'tcp') || 'udp'
-
-  console.log({ authuser, name, secret, port, domain, transport })
+  const transport =
+    (urlParams.get('transport') as null | 'udp' | 'tcp') ||
+    (urlParams.get('protocol') as null | 'udp' | 'tcp') ||
+    'udp'
 
   if (authuser && secret && port && domain && transport) {
     return {
@@ -66,7 +67,6 @@ function credentialsInURL() {
 
 function getCredentials() {
   const urlCredentials = credentialsInURL()
-  console.log({ urlCredentials })
 
   if (urlCredentials) {
     return urlCredentials

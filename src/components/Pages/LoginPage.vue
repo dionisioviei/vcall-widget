@@ -11,6 +11,7 @@ const authSecret = ref(secret || '');
 const authDomain = ref(domain || '');
 const authPort = ref(port);
 const unregistering = ref(false);
+const authTransport = ref<'udp' | 'tcp'>('udp');
 
 const props = defineProps<{
     show: boolean; register: ({ authuser, secret, domain, port, name, transport, }: {
@@ -31,7 +32,7 @@ function handleSubmit() {
         name: authName.value || name || authUsername.value,
         port: authPort.value,
         secret: authSecret.value,
-        transport: transport
+        transport: authTransport.value
     });
     props.register({
         authuser: authUsername.value,
@@ -39,7 +40,7 @@ function handleSubmit() {
         name: authName.value || name || authUsername.value,
         port: authPort.value,
         secret: authSecret.value,
-        transport: transport
+        transport: authTransport.value
     });
 }
 
@@ -67,16 +68,25 @@ const registering = computed(() => {
         </span>
 
         <form class='my-4 w-full flex flex-col gap-2' @submit.prevent="handleSubmit">
-            <input type="text" placeholder='Nome' v-model="authName" class='md:min-w-[304px] w-full h-10 px-2 text-sm placeholder-zinc-400 text-zinc-100 border-zinc-800 bg-zinc-800 rounded-md focus:border-zinc-500
-                 focus:ring-zinc-500 focus:ring-1 focus:outline-none' />
-            <input type="text" placeholder='Usuário ou Ramal' :required="true" v-model="authUsername" class='md:min-w-[304px] w-full h-10 px-2 text-sm placeholder-zinc-400 text-zinc-100 border-zinc-800 bg-zinc-800 rounded-md focus:border-zinc-500
-                 focus:ring-zinc-500 focus:ring-1 focus:outline-none' />
+            <div class="flex flex-row gap-2">
+                <input type="text" placeholder='Nome' v-model="authName" class='md:min-w-[100px] w-52 h-10 px-2 text-sm placeholder-zinc-400 text-zinc-100 border-zinc-800 bg-zinc-800 rounded-md focus:border-zinc-500
+                 focus:outline-blue-500 focus:outline outline-none' />
+                <input type="text" placeholder='Usuário ou Ramal' :required="true" v-model="authUsername" class='md:min-w-[100px] w-52 h-10 px-2 text-sm placeholder-zinc-400 text-zinc-100 border-zinc-800 bg-zinc-800 rounded-md focus:border-zinc-500
+                 focus:outline-blue-500 focus:outline outline-none' />
+            </div>
             <input type="password" placeholder='Senha' :required="true" v-model="authSecret" class='md:min-w-[304px] w-full h-10 px-2 text-sm placeholder-zinc-400 text-zinc-100 border-zinc-800 bg-zinc-800 rounded-md focus:border-zinc-500
-                 focus:ring-zinc-500 focus:ring-1 focus:outline-none' />
+                 focus:outline-blue-500 focus:outline outline-none' />
             <input type="text" placeholder='Domínio' :required="true" v-model="authDomain" class='md:min-w-[304px] w-full h-10 px-2 text-sm placeholder-zinc-400 text-zinc-100 border-zinc-800 bg-zinc-800 rounded-md focus:border-zinc-500
-                 focus:ring-zinc-500 focus:ring-1 focus:outline-none' />
-            <input type="number" placeholder='Porta' :required="true" v-model="authPort" class='md:min-w-[304px] w-full h-10 px-2 text-sm placeholder-zinc-400 text-zinc-100 border-zinc-800 bg-zinc-800 rounded-md focus:border-zinc-500
-                 focus:ring-zinc-500 focus:ring-1 focus:outline-none' />
+                 focus:outline-blue-500 focus:outline outline-none' />
+            <div class="flex flex-row gap-2">
+                <input type="number" placeholder='Porta' :required="true" v-model="authPort" class='md:min-w-[100px] w-52 h-10 px-2 text-sm placeholder-zinc-400 text-zinc-100 border-zinc-800 bg-zinc-800 rounded-md focus:border-zinc-500
+                 focus:outline-blue-500 focus:outline outline-none' />
+                <select v-model="authTransport" required
+                    class='md:min-w-[100px] w-52 h-10 px-2 text-sm placeholder-zinc-400 text-zinc-100 border-zinc-800 bg-zinc-800 rounded-md focus:border-zinc-500 focus:outline-blue-500 focus:outline outline-none'>
+                    <option value="udp">Protocolo UDP</option>
+                    <option value="tcp">Protocolo TCP</option>
+                </select>
+            </div>
 
             <footer class='flex gap-2 mt-2'>
 
