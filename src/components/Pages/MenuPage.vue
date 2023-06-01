@@ -94,22 +94,6 @@ watchEffect(() => {
 
             <CloseButton />
         </header>
-        <!-- <div class="flex items-center justify-center mt-2">
-            <input type="checkbox" v-model="selectedOption" id="selectedOption" class="hidden" @change="handleRegister"
-                :disabled="!['Conectado', 'Desconectado', 'Registro falhou'].includes(props.agentStatus)">
-            <label for="selectedOption" class="flex flex-col items-center cursor-pointer">
-                <span class="text-gray-200">{{ selectedOption ? 'Online' : 'Offline' }}</span>
-                <div class="relative h-6 w-12 rounded-full p-1">
-                    <div :class="{ 'bg-green-500': selectedOption, 'bg-red-500': !selectedOption, 'opacity-50': !['Conectado', 'Desconectado', 'Registro falhou'].includes(props.agentStatus) }"
-                        class="absolute left-0 top-0 h-full w-full rounded-full shadow transition-all duration-400 ease-linear ">
-                    </div>
-                    <div class="absolute top-1 h-4 w-4 rounded-full bg-gray-200 transition-transform duration-400 ease-linear "
-                        :class="{ 'translate-x-0': selectedOption, 'translate-x-[150%]': !selectedOption }">
-                    </div>
-                </div>
-            </label>
-        </div> -->
-
 
         <div class='flex py-8 gap-2 w-full' v-show="activePage === 'Menu'">
             <button v-for="{ icon, name, label } in Routes" :key="name" type='button' :title="name"

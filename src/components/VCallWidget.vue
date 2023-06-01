@@ -54,7 +54,7 @@ const {
   localStreamElement: localStream,
   remoteStreamElement: remoteStream,
   debug: 'minimal',
-  registerTimeout: 10,
+  registerTimeout: 5,
 });
 
 const agentStatus = computed(() => {
@@ -144,6 +144,19 @@ watchEffect(() => {
 });
 
 watchEffect(() => {
+  if (janusStatus.value === 'error') {
+    sendNotification({
+      title: 'Webphone OFFLINE!', options: {
+        vibrate: 150,
+        body: `Webphone perdeu conexão com o WSS.`,
+        requireInteraction: true,
+        icon: IncomingCallIcon,
+      }
+    })
+  }
+});
+
+watchEffect(() => {
   if (alertIncomingCallAudio.value === null && extenStatus.value === 'incomingcall') {
     isStatic.value = true;
     openPopover();
@@ -186,21 +199,28 @@ watchEffect(() => {
 
   if (alertCallAudio.value && extenStatus.value === 'incall') {
     mediaRecorder.value?.start();
-    alertCallAudio.value.pause();
-    alertCallAudio.value = null;
-  }
-
-  if (extenStatus.value !== 'calling' && alertCallAudio.value) {
-    alertCallAudio.value.pause();
-    alertCallAudio.value = null;
   }
 
   if (extenStatus.value === 'idle') {
     mediaRecorder.value?.stop();
     mediaRecorder.value === null;
+
+  }
+});
+
+watchEffect(() => {
+  if (extenStatus.value !== 'calling' && alertCallAudio.value) {
+    setTimeout(() => {
+      alertCallAudio.value?.pause();
+      alertCallAudio.value = null;
+    }, 100);
   }
 
-});
+  if (alertCallAudio.value && extenStatus.value === 'incall') {
+    alertCallAudio.value.pause();
+    alertCallAudio.value = null;
+  }
+})
 
 watchEffect(() => {
   if (localStream.value && remoteStream.value && mediaRecorder.value === null) {
@@ -276,7 +296,7 @@ onUnmounted(() => {
 
     <PopoverButton title='FeedBack' aria-label='FeedBack' id="popoverbutton"
       class='bg-blue-500 rounded-full px-2 h-14 text-white flex items-center group shadow-[0_0.5rem_1.5rem_#8257e540]'
-      :class="{ 'animate-pulse bg-orange-500': ['Recebendo chamada', 'Em chamada'].includes(agentStatus) }">
+      :class="{ 'animate-pulse bg-orange-500': ['Recebendo chamada', 'Em chamada'].includes(agentStatus), 'bg-orange-500': ['Registro falhou', 'Desconectado'].includes(agentStatus) }">
       <ph-phone :size="32" />
 
       <span
