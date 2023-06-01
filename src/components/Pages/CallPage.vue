@@ -6,6 +6,8 @@ import { formatTime } from '../../utils/formatTime';
 const numberToCall = ref('');
 const numberToCallInput = ref<HTMLInputElement | null>(null);
 const dtmfCommand = ref('');
+const commandBtnDisabled = ref(false);
+const commandBtnTimer = ref(0);
 
 const focusTimeout = ref<null | number>(null);
 
@@ -24,9 +26,22 @@ const props = defineProps<{
     }; answer: () => void; hangup: () => void; sendDTMF: (dtmfToSend: string) => void; startCall: (numberToCall: string) => void; toggleHold: () => void; toggleMute: () => void;
 }>()
 
-
 function handleCall() {
+    if (!parseInt(numberToCall.value, 10)) {
+        return;
+    }
     props.startCall(numberToCall.value);
+}
+
+function handleSendDTMF() {
+    if (!dtmfCommand.value.trim()) {
+        return;
+    }
+    commandBtnDisabled.value = true;
+    props.sendDTMF(dtmfCommand.value)
+    commandBtnTimer.value = setTimeout(() => {
+        commandBtnDisabled.value = false;
+    }, 1500);
 }
 
 watchEffect(() => {
@@ -37,6 +52,10 @@ watchEffect(() => {
 
 onUnmounted(() => {
     focusTimeout.value && clearTimeout(focusTimeout.value);
+});
+
+onUnmounted(() => {
+    commandBtnTimer.value && clearTimeout(commandBtnTimer.value);
 });
 </script>
 
@@ -50,7 +69,7 @@ onUnmounted(() => {
             <form class='my-4 w-full' @submit.prevent="handleCall">
                 <input type="text" ref="numberToCallInput" placeholder='Digite um número' :required="true"
                     v-model="numberToCall"
-                    class='md:min-w-[304px] w-full h-10 px-2 text-sm placeholder-zinc-400 text-zinc-100 border-zinc-800 bg-zinc-800 rounded-md focus:border-zinc-500 focus:ring-zinc-500 focus:ring-1 focus:outline-none' />
+                    class='md:min-w-[304px] w-full h-14 p-0 text-2xl text-center placeholder-zinc-400 text-zinc-100 border-zinc-800 bg-zinc-800 rounded-md focus:border-blue-500 focus:ring-blue-500 focus:ring-1 focus:outline-none' />
 
                 <footer class='flex gap-2 mt-2'>
 
@@ -89,11 +108,11 @@ onUnmounted(() => {
                 <div class="flex flex-col">
                     <input type="text" placeholder="*2"
                         class="w-28 rounded-t-lg bg-zinc-700 p-2 shadow-inner shadow-zinc-900 h-15" v-model="dtmfCommand"
-                        required />
-                    <button type='button' class='bg-zinc-800 rounded-b-lg py-2 w-28 flex flex-1 flex-col items-center gap-2 border-2 border-transparent
+                        @keyup.enter="handleSendDTMF" required />
+                    <button ref="commandRef" type='button' class='bg-zinc-800 rounded-b-lg py-2 w-28 flex flex-1 flex-col items-center gap-2 border-2 border-transparent
                 hover:border-blue-500 focus:outline-none focus:border-blue-500 transition-all duration-400 ease-linear'
-                        :class="{ 'opacity-50 cursor-not-allowed': props.extenStatus !== 'incall' }"
-                        @click="props.sendDTMF(dtmfCommand)" :disabled="props.extenStatus !== 'incall'">
+                        :class="{ 'opacity-50 cursor-not-allowed': props.extenStatus !== 'incall' || commandBtnDisabled }"
+                        @click="handleSendDTMF" :disabled="props.extenStatus !== 'incall' || commandBtnDisabled">
                         <PhCommand :size="32" />
                         <span>Discar</span>
                     </button>
