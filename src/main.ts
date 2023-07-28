@@ -5,7 +5,9 @@ import App from './App.vue'
 
 if (!document.getElementById('vittelgroup-vcall')) {
   const div = document.createElement('div')
-  div.id = 'vittelgroup-vcall'
+  div.setAttribute('id', 'vittelgroup-vcall')
+  div.attachShadow({ mode: 'open' })
+
   document.body.appendChild(div)
 }
 
