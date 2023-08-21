@@ -62,49 +62,49 @@ const registering = computed(() => {
 </script>
 
 <template>
-    <div v-show="props.show" class="border-zinc-700 p-2 my-2">
-        <span class='text-xl leading-6 flex items-center gap-2 my-4'>
+    <div v-show="props.show" class="tw-border-zinc-700 tw-p-2 tw-my-2">
+        <span class='tw-text-xl tw-leading-6 tw-flex tw-items-center tw-gap-2 tw-my-4'>
             Dados do Login
         </span>
 
-        <form class='my-4 w-full flex flex-col gap-2' @submit.prevent="handleSubmit">
-            <div class="flex flex-row gap-2">
-                <input type="text" placeholder='Nome' v-model="authName" class='md:min-w-[100px] w-52 h-10 px-2 text-sm placeholder-zinc-400 text-zinc-100 border-zinc-800 bg-zinc-800 rounded-md focus:border-zinc-500
-                 focus:outline-blue-500 focus:outline outline-none' />
-                <input type="text" placeholder='Usuário ou Ramal' :required="true" v-model="authUsername" class='md:min-w-[100px] w-52 h-10 px-2 text-sm placeholder-zinc-400 text-zinc-100 border-zinc-800 bg-zinc-800 rounded-md focus:border-zinc-500
-                 focus:outline-blue-500 focus:outline outline-none' />
+        <form class='tw-my-4 tw-w-full tw-flex tw-flex-col tw-gap-2' @submit.prevent="handleSubmit">
+            <div class="tw-flex tw-flex-row tw-gap-2">
+                <input type="text" placeholder='Nome' v-model="authName" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
+                 focus:tw-outline-blue-500 focus:tw-outline tw-outline-none' />
+                <input type="text" placeholder='Usuário ou Ramal' :required="true" v-model="authUsername" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
+                 focus:tw-outline-blue-500 focus:tw-outline tw-outline-none' />
             </div>
-            <input type="password" placeholder='Senha' :required="true" v-model="authSecret" class='md:min-w-[304px] w-full h-10 px-2 text-sm placeholder-zinc-400 text-zinc-100 border-zinc-800 bg-zinc-800 rounded-md focus:border-zinc-500
-                 focus:outline-blue-500 focus:outline outline-none' />
-            <input type="text" placeholder='Domínio' :required="true" v-model="authDomain" class='md:min-w-[304px] w-full h-10 px-2 text-sm placeholder-zinc-400 text-zinc-100 border-zinc-800 bg-zinc-800 rounded-md focus:border-zinc-500
-                 focus:outline-blue-500 focus:outline outline-none' />
-            <div class="flex flex-row gap-2">
-                <input type="number" placeholder='Porta' :required="true" v-model="authPort" class='md:min-w-[100px] w-52 h-10 px-2 text-sm placeholder-zinc-400 text-zinc-100 border-zinc-800 bg-zinc-800 rounded-md focus:border-zinc-500
-                 focus:outline-blue-500 focus:outline outline-none' />
+            <input type="password" placeholder='Senha' :required="true" v-model="authSecret" class='md:tw-min-w-[304px] tw-w-full tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
+                 focus:tw-outline-blue-500 focus:tw-outline tw-outline-none' />
+            <input type="text" placeholder='Domínio' :required="true" v-model="authDomain" class='md:tw-min-w-[304px] tw-w-full tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
+                 focus:tw-outline-blue-500 focus:tw-outline tw-outline-none' />
+            <div class="tw-flex tw-flex-row tw-gap-2">
+                <input type="number" placeholder='Porta' :required="true" v-model="authPort" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
+                 focus:tw-outline-blue-500 focus:tw-outline tw-outline-none' />
                 <select v-model="authTransport" required
-                    class='md:min-w-[100px] w-52 h-10 px-2 text-sm placeholder-zinc-400 text-zinc-100 border-zinc-800 bg-zinc-800 rounded-md focus:border-zinc-500 focus:outline-blue-500 focus:outline outline-none'>
+                    class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500 focus:tw-outline-blue-500 focus:tw-outline tw-outline-none'>
                     <option value="udp">Protocolo UDP</option>
                     <option value="tcp">Protocolo TCP</option>
                 </select>
             </div>
 
-            <footer class='flex gap-2 mt-2'>
+            <footer class='tw-flex tw-gap-2 tw-mt-2'>
 
                 <button type='submit' title='Salvar' aria-labelledby='Salvar'
-                    class='bg-zinc-800 rounded-lg py-1 w-24 flex flex-1 flex-row items-center justify-center gap-2 border-2 border-transparent
-                hover:border-blue-500 hover:text-green-500 disabled:hover:text-zinc-100 focus:outline-none focus:border-blue-500 transition-all duration-400 ease-linear disabled:opacity-50 disabled:border-2'
+                    class='tw-bg-zinc-800 tw-rounded-lg tw-py-1 tw-w-24 tw-flex tw-flex-1 tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-border-2 tw-border-transparent
+                hover:tw-border-blue-500 hover:tw-text-green-500 disabled:hover:tw-text-zinc-100 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear disabled:tw-opacity-50 disabled:tw-border-2'
                     :disabled="registering || props.agentStatus === 'Conectado' || props.agentStatus === 'Desconectando'">
                     <component :is="registering ? PhSpinner : PhSignIn" :size="20"
-                        :class="{ 'animate-spin': registering }" />{{ registering
+                        :class="{ 'tw-animate-spin': registering }" />{{ registering
                             ? 'Registrando' :
                             'Conectar' }}
                 </button>
                 <button type='button' title='Desconectar' aria-labelledby='Desconectar' @click="handleLogout"
-                    class='bg-zinc-800 rounded-lg py-1 w-24 flex flex-1 flex-row items-center justify-center gap-2 border-2 border-transparent
-                hover:border-blue-500 hover:text-red-500 disabled:hover:text-zinc-100 focus:outline-none focus:border-blue-500 transition-all duration-400 ease-linear disabled:opacity-50 disabled:border-2'
+                    class='tw-bg-zinc-800 tw-rounded-lg tw-py-1 tw-w-24 tw-flex tw-flex-1 tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-border-2 tw-border-transparent
+                hover:tw-border-blue-500 hover:tw-text-red-500 disabled:hover:tw-text-zinc-100 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear disabled:tw-opacity-50 disabled:tw-border-2'
                     :disabled="unregistering || ['Desconectado', 'Registro falhou'].includes(props.agentStatus)">
                     <component :is="unregistering ? PhSpinner : PhSignOut" :size="20"
-                        :class="{ 'animate-spin': unregistering }" />{{ unregistering
+                        :class="{ 'tw-animate-spin': unregistering }" />{{ unregistering
                             ? 'Desconectando' :
                             'Desconectar' }}
                 </button>

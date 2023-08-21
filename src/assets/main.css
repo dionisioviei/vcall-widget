@@ -3,5 +3,9 @@
 @tailwind utilities;
 
 #vittelgroup-vcall {
-  @apply text-zinc-100;
+    @apply tw-text-zinc-100;
 }
+
+
+
+

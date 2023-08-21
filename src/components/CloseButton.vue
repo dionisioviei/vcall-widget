@@ -10,7 +10,7 @@ import { PhX } from "@phosphor-icons/vue";
 
 <template>
     <PopoverButton title='Fechar popover' aria-label='Fechar popover'
-        class='top-5 right-5 absolute text-zinc-400 hover:text-zinc-100'>
-        <PhX weight='bold' class='w-4 h-4' />
+        class='tw-top-5 tw-right-5 tw-absolute text-zinc-400 hover:tw-text-zinc-100'>
+        <PhX weight='bold' class='tw-w-4 tw-h-4' />
     </PopoverButton>
 </template>

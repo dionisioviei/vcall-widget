@@ -282,12 +282,12 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <Popover class='absolute bottom-4 right-4 md:bottom-8 md:right-8 flex flex-col items-end'>
+  <Popover class='tw-z-[999] tw-absolute tw-bottom-4 tw-right-4 md:tw-bottom-8 md:tw-right-8 tw-flex tw-flex-col tw-items-end'>
 
-    <transition enter-active-class="transition duration-100 ease-out" enter-from-class="translate-y-1 opacity-0"
-      enter-to-class="translate-y-0 opacity-100" leave-active-class="transition duration-100 ease-in"
-      leave-from-class="translate-y-0 opacity-100" leave-to-class="translate-y-1 opacity-0">
-      <PopoverPanel :static="isStatic">
+    <transition enter-active-class="tw-transition tw-duration-100 tw-ease-out" enter-from-class="tw-translate-y-1 tw-opacity-0"
+      enter-to-class="tw-translate-y-0 tw-opacity-100" leave-active-class="tw-transition tw-duration-100 tw-ease-in"
+      leave-from-class="tw-translate-y-0 tw-opacity-100" leave-to-class="tw-translate-y-1 tw-opacity-0">
+      <PopoverPanel :tw-static="isStatic">
         <MenuPage :agentStatus="agentStatus" :register="register" :unregister="unregister" :answer="answer"
           :hangup="hangup" :inCallStatus="inCallStatus" :sendDTMF="sendDTMF" :startCall="startCall"
           :toggleHold="toggleHold" :callDuration="callDuration" :toggleMute="toggleMute" :extenStatus="extenStatus" />
@@ -295,14 +295,14 @@ onUnmounted(() => {
     </transition>
 
     <PopoverButton title='FeedBack' aria-label='FeedBack' id="popoverbutton"
-      class='bg-blue-500 rounded-full px-2 h-14 text-white flex items-center group shadow-[0_0.5rem_1.5rem_#8257e540]'
-      :class="{ 'animate-pulse bg-orange-500': ['Recebendo chamada', 'Em chamada'].includes(agentStatus), 'bg-orange-500': ['Registro falhou', 'Desconectado'].includes(agentStatus) }">
+      class='tw-bg-blue-500 tw-rounded-full tw-px-2 tw-h-14 tw-text-white tw-flex tw-items-center tw-group tw-shadow-[0_0.5rem_1.5rem_#8257e540]'
+      :class="{ 'tw-animate-pulse tw-bg-orange-500': ['Recebendo chamada', 'Em chamada'].includes(agentStatus), 'tw-bg-orange-500': ['Registro falhou', 'Desconectado'].includes(agentStatus) }">
       <ph-phone :size="32" />
 
       <span
-        class='max-w-0 truncate group-hover:max-w-xl transition-all duration-500 ease-in-out text-clip overflow-hidden'
-        :class="{ 'max-w-xl': ['Recebendo chamada', 'Em chamada'].includes(agentStatus) }">
-        <span class='pl-2' />
+        class='tw-max-w-0 tw-truncate group-hover:tw-max-w-xl tw-transition-all tw-duration-500 tw-ease-in-out tw-text-clip tw-overflow-hidden'
+        :class="{ 'tw-max-w-xl': ['Recebendo chamada', 'Em chamada'].includes(agentStatus) }">
+        <span class='tw-pl-2' />
         {{ agentStatus === 'Em chamada' ? `Em chamada ${formatTime(callDuration || 0)} ` :
           (['Recebendo chamada'].includes(agentStatus) ? 'Recebendo chamada' : 'Fazer uma ligação') }}
       </span>

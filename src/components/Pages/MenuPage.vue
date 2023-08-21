@@ -79,27 +79,27 @@ watchEffect(() => {
 
 <template>
     <div
-        class='bg-zinc-900 p-4 relative rounded-2xl mb-4 flex flex-col items-center shadow-md shadow-slate-800 w-[calc(100vw-2rem)] md:w-auto'>
+        class='tw-bg-zinc-900 tw-p-4 tw-relative tw-rounded-2xl tw-mb-4 tw-flex tw-flex-col tw-items-center tw-shadow-md tw-shadow-slate-800 tw-w-[calc(100vw-2rem)] md:tw-w-auto'>
         <header>
             <button
                 v-show="activePage !== 'Menu' && ['Em chamada', 'Recebendo chamada'].includes(props.agentStatus) === false"
                 type='button' title='Voltar' aria-label='Voltar' @click="changePage('Menu')"
-                className='top-4 left-4 absolute text-zinc-400 hover:text-zinc-100 flex flex-row-reverse justify-center items-center'>
+                className='tw-top-4 tw-left-4 tw-absolute text-zinc-400 hover:text-zinc-100 tw-flex tw-flex-row-reverse tw-justify-center tw-items-center'>
                 Voltar
                 <PhArrowLeft weight='bold' />
             </button>
-            <span class='text-xl leading-6 flex flex-row justify-center items-center'>
-                <PhUser class="mr-2" />{{ nameHeader || 'Conecte-se para ligar' }}
+            <span class='tw-text-xl tw-leading-6 tw-flex tw-flex-row tw-justify-center tw-items-center'>
+                <PhUser class="tw-mr-2" />{{ nameHeader || 'Conecte-se para ligar' }}
             </span>
 
             <CloseButton />
         </header>
 
-        <div class='flex py-8 gap-2 w-full' v-show="activePage === 'Menu'">
+        <div class='tw-flex tw-py-8 tw-gap-2 tw-w-full' v-show="activePage === 'Menu'">
             <button v-for="{ icon, name, label } in Routes" :key="name" type='button' :title="name"
                 @click="changePage(name)"
-                class='bg-zinc-800 rounded-lg py-5 w-24 flex flex-1 flex-col items-center gap-2 border-2 border-transparent
-                hover:border-blue-500 focus:outline-none focus:border-blue-500 transition-all duration-400 ease-linear disabled:border-0 disabled:opacity-50 disabled:cursor-not-allowed'
+                class='tw-bg-zinc-800 tw-rounded-lg tw-py-5 tw-w-24 tw-flex tw-flex-1 tw-flex-col tw-items-center tw-gap-2 tw-border-2 tw-border-transparent
+                hover:tw-border-blue-500 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear disabled:tw-border-0 disabled:tw-opacity-50 disabled:tw-cursor-not-allowed'
                 :disabled="['Desconectado', 'Conectando...', 'Registro falhou'].includes(props.agentStatus) && name !== 'Login'">
                 <component :is="icon" :size="32" />
                 <span>{{ label }}</span>
@@ -114,19 +114,18 @@ watchEffect(() => {
             :agentStatus="agentStatus" />
         <HistoryPage :show="activePage === 'History'" />
 
-        <footer class='text-xs text-neutral-400 w-full text-center'>
-            <div class="w-full text-white border-t-2 text-center border-b-2 py-2 rounded-lg px-1 mb-2 tracking-wider"
+        <footer class='tw-text-xs tw-text-neutral-400 tw-w-full tw-text-center'>
+            <div class="tw-w-full tw-text-white tw-border-t-2 tw-text-center tw-border-b-2 tw-py-2 tw-rounded-lg tw-px-1 tw-mb-2 tw-tracking-wider"
                 :class="{
-                    'border-green-700 bg-green-700': props.agentStatus === 'Conectado',
-                    'border-red-700 bg-red-700': ['Registro falhou', 'Desconectado'].includes(props.agentStatus),
-                    'border-orange-700 bg-orange-700 animate-pulse': ['Desconectando', 'Conectando...', 'Em chamada', 'Recebendo chamada'].includes(props.agentStatus),
+                    'tw-border-green-700 tw-bg-green-700': props.agentStatus === 'Conectado',
+                    'tw-border-red-700 tw-bg-red-700': ['Registro falhou', 'Desconectado'].includes(props.agentStatus),
+                    'tw-border-orange-700 tw-bg-orange-700 tw-animate-pulse': ['Desconectando', 'Conectando...', 'Em chamada', 'Recebendo chamada'].includes(props.agentStatus),
                 }">
                 <span>{{ props.agentStatus }}</span>
             </div>
-            Feito com <b class="animate-pulse">♥</b> pela <a href='https://digital.vittel.com.br/vittel-cloud-talk/'
-                target='_blank' class='underline underline-offset-2 hover:text-blue-400 text-xs'>Vittel</a>
+            Feito com <b class="tw-animate-pulse">♥</b> pela <a href='https://digital.vittel.com.br/vittel-cloud-talk/'
+                target='_blank' class='tw-underline tw-underline-offset-2 hover:tw-text-blue-400 tw-text-xs'>Vittel</a>
 
         </footer>
     </div>
 </template>
-

@@ -78,26 +78,26 @@ watchEffect(() => {
 </script>
 
 <template>
-    <div v-show="props.show" class="border-zinc-700 p-2 my-2">
-        <span class='text-xl leading-6 flex items-center gap-2 my-4'>
+    <div v-show="props.show" class="border-zinc-700 tw-p-2 tw-my-2">
+        <span class='tw-text-xl tw-leading-6 tw-flex tw-items-center tw-gap-2 tw-my-4'>
             Chamadas Recentes
         </span>
         <div v-show="callHistory && callHistory?.length > 0"
-            class="w-full flex flex-row gap-1 min-w-[350px] justify-center items-center">
+            class="tw-w-full tw-flex tw-flex-row tw-gap-1 tw-min-w-[350px] tw-justify-center tw-items-center">
             <button type="button"
-                class="hover:outline-blue-500 hover:outline outline-none rounded-md active:bg-zinc-800 transition-colors"
+                class="hover:tw-outline-blue-500 hover:tw-outline tw-outline-none tw-rounded-md active:tw-bg-zinc-800 tw-transition-colors"
                 @click="() => currentPage = currentPage <= 1 ? maxPages : currentPage - 1">
                 <PhArrowCircleLeft :size="24" />
             </button>
             <input type="number"
-                class="w-[52px] hover:outline-blue-500 hover:outline outline-none rounded-md bg-zinc-800 text-center appearance-none"
+                class="w-[52px] hover:tw-outline-blue-500 hover:tw-outline tw-outline-none tw-rounded-md tw-bg-zinc-800 tw-text-center tw-appearance-none"
                 placeholder="1" @keyup="handlePageChange" :value="currentPage" />
-            <span class="text-xl font-bold">/</span>
+            <span class="tw-text-xl tw-font-bold">/</span>
             <input type="text"
-                class="w-[52px] font-bold hover:outline-blue-500 hover:outline outline-none rounded-md bg-zinc-800 text-center italic"
+                class="w-[52px] tw-font-bold hover:tw-outline-blue-500 hover:tw-outline tw-outline-none tw-rounded-md tw-bg-zinc-800 tw-text-center tw-italic"
                 v-model="maxPages" disabled />
             <button
-                class="hover:outline-blue-500 hover:outline outline-none rounded-md active:bg-zinc-800 transition-colors"
+                class="hover:tw-outline-blue-500 hover:tw-outline tw-outline-none tw-rounded-md active:tw-bg-zinc-800 tw-transition-colors"
                 type="button" @click="() => currentPage = currentPage >= maxPages ? 1 : currentPage + 1">
                 <PhArrowCircleRight :size="24" />
             </button>
@@ -105,34 +105,34 @@ watchEffect(() => {
         </div>
 
 
-        <div class='my-4 w-full flex flex-col gap-2 min-w-[425px] rounded-lg'>
+        <div class='tw-my-4 tw-w-full tw-flex tw-flex-col tw-gap-2 tw-min-w-[425px] tw-rounded-lg'>
             <ul
-                class="scroll-smooth text-zinc-200 p-4 max-h-[250px] overflow-scroll overflow-x-hidden scrollbar-thumb-zinc-700 scrollbar-track-transparent scrollbar-thin">
-                <span v-show="callHistory && callHistory.length <= 0" class="italic w-full text-center"> Nenhuma chamada
+                class="scroll-smooth tw-text-zinc-200 tw-p-4 tw-max-h-[250px] tw-overflow-scroll tw-overflow-x-hidden scrollbar-thumb-zinc-700 scrollbar-track-transparent scrollbar-thin">
+                <span v-show="callHistory && callHistory.length <= 0" class="tw-italic tw-w-full tw-text-center"> Nenhuma chamada
                 </span>
                 <span v-show="callHistory && callHistory.length > 0 && currentPage === 1"
-                    class="flex flex-row items-center justify-start">Última chamada
+                    class="tw-flex tw-flex-row tw-items-center tw-justify-start">Última chamada
                     <PhArrowBendRightDown :size="20" />
                 </span>
-                <li class="w-full mb-1 flex flex-col justify-between items-center p-2 hover:outline-blue-500 hover:outline outline-none rounded-md bg-zinc-800 group"
+                <li class="tw-w-full tw-mb-1 tw-flex tw-flex-col tw-justify-between tw-items-center tw-p-2 hover:tw-outline-blue-500 hover:tw-outline tw-outline-none tw-rounded-md tw-bg-zinc-800 tw-group"
                     v-for="(call, index) in callHistory" :key="call.date.toLocaleString()"
-                    :class="{ 'border-b-2': index === 0 && currentPage === 1 && call.duration !== '00:00:00' }">
-                    <div class="flex flex-row justify-between items-start w-full">
-                        <span class="flex flex-row justify-center items-center gap-1"
-                            :class="{ 'text-red-400': call.duration === '00:00:00' }">
+                    :class="{ 'tw-border-b-2': index === 0 && currentPage === 1 && call.duration !== '00:00:00' }">
+                    <div class="tw-flex tw-flex-row tw-justify-between tw-items-start tw-w-full">
+                        <span class="tw-flex tw-flex-row tw-justify-center tw-items-center tw-gap-1"
+                            :class="{ 'tw-text-red-400': call.duration === '00:00:00' }">
                             <component
                                 :is="call.callDirection ? (call.callDirection === 'incoming' ? PhPhoneIncoming : PhPhoneOutgoing) : PhPhoneCall"
-                                :size="20" /> {{ call.number }} <span class="italic text-zinc-500">{{
+                                :size="20" /> {{ call.number }} <span class="tw-italic tw-text-zinc-500">{{
                                     call.duration
                                 }}</span>
                         </span>
-                        <span class="text-zinc-400">
+                        <span class="tw-text-zinc-400">
                             {{ handleDate(call.date) }}
                         </span>
                     </div>
                     <span v-if="index === 0 && lastCallAudio && currentPage === 1 && call.duration !== '00:00:00'"
-                        class="rounded-md truncate max-h-0 group-hover:max-h-12 transition-all duration-250 ease-in overflow-hidden">
-                        <audio id="lastCallAudioPlayer" ref="lastCallAudioPlayer" class="rounded-md"
+                        class="tw-rounded-md tw-truncate tw-max-h-0 tw-group-hover:tw-max-h-12 tw-transition-all duration-250 tw-ease-in tw-overflow-hidden">
+                        <audio id="lastCallAudioPlayer" ref="lastCallAudioPlayer" class="tw-rounded-md"
                             style="background: transparent;" controls>
                             <source type="audio/ogg">
                             Your browser does not support the audio element.
