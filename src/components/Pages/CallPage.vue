@@ -71,14 +71,14 @@ onUnmounted(() => {
                     v-model="numberToCall"
                     class='md:tw-min-w-[304px] tw-w-full tw-h-14 tw-p-0 tw-text-2xl tw-text-center tw-placeholder-zinc-400 tw-text-zinc-100 border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-blue-500 focus:tw-ring-blue-500 focus:tw-ring-1 focus:tw-outline-none' />
 
-                <footer class='tw-flex tw-gap-2 tw-mt-2'>
+                <div class='tw-flex tw-gap-2 tw-mt-2'>
 
                     <button type='submit' title='Ligar' aria-labelledby='Ligar'
                         class='tw-bg-zinc-800 tw-rounded-lg tw-py-1 tw-w-24 tw-flex tw-flex-1 tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-border-2 tw-border-transparent
                 hover:tw-border-blue-500 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear'>
                         <PhPhoneCall :size="20" />Ligar
                     </button>
-                </footer>
+                </div>
             </form>
         </div>
 

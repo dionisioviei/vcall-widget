@@ -114,7 +114,7 @@ watchEffect(() => {
             :agentStatus="agentStatus" />
         <HistoryPage :show="activePage === 'History'" />
 
-        <footer class='tw-text-xs tw-text-neutral-400 tw-w-full tw-text-center'>
+        <div class='tw-bg-zinc-900 tw-text-xs tw-text-neutral-400 tw-w-full tw-text-center'>
             <div class="tw-w-full tw-text-white tw-border-t-2 tw-text-center tw-border-b-2 tw-py-2 tw-rounded-lg tw-px-1 tw-mb-2 tw-tracking-wider"
                 :class="{
                     'tw-border-green-700 tw-bg-green-700': props.agentStatus === 'Conectado',
@@ -126,6 +126,6 @@ watchEffect(() => {
             Feito com <b class="tw-animate-pulse">♥</b> pela <a href='https://digital.vittel.com.br/vittel-cloud-talk/'
                 target='_blank' class='tw-underline tw-underline-offset-2 hover:tw-text-blue-400 tw-text-xs'>Vittel</a>
 
-        </footer>
+        </div>
     </div>
 </template>

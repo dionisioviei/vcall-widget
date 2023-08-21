@@ -88,7 +88,7 @@ const registering = computed(() => {
                 </select>
             </div>
 
-            <footer class='tw-flex tw-gap-2 tw-mt-2'>
+            <div class='tw-flex tw-gap-2 tw-mt-2'>
 
                 <button type='submit' title='Salvar' aria-labelledby='Salvar'
                     class='tw-bg-zinc-800 tw-rounded-lg tw-py-1 tw-w-24 tw-flex tw-flex-1 tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-border-2 tw-border-transparent
@@ -108,7 +108,7 @@ const registering = computed(() => {
                             ? 'Desconectando' :
                             'Desconectar' }}
                 </button>
-            </footer>
+            </div>
         </form>
     </div>
 </template>
