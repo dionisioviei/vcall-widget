@@ -70,19 +70,19 @@ const registering = computed(() => {
         <form class='tw-my-4 tw-w-full tw-flex tw-flex-col tw-gap-2' @submit.prevent="handleSubmit">
             <div class="tw-flex tw-flex-row tw-gap-2">
                 <input type="text" placeholder='Nome' v-model="authName" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
-                 focus:tw-outline-blue-500 focus:tw-outline tw-outline-none' />
+                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none' />
                 <input type="text" placeholder='Usuário ou Ramal' :required="true" v-model="authUsername" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
-                 focus:tw-outline-blue-500 focus:tw-outline tw-outline-none' />
+                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none' />
             </div>
             <input type="password" placeholder='Senha' :required="true" v-model="authSecret" class='md:tw-min-w-[304px] tw-w-full tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
-                 focus:tw-outline-blue-500 focus:tw-outline tw-outline-none' />
+                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none' />
             <input type="text" placeholder='Domínio' :required="true" v-model="authDomain" class='md:tw-min-w-[304px] tw-w-full tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
-                 focus:tw-outline-blue-500 focus:tw-outline tw-outline-none' />
+                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none' />
             <div class="tw-flex tw-flex-row tw-gap-2">
                 <input type="number" placeholder='Porta' :required="true" v-model="authPort" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
-                 focus:tw-outline-blue-500 focus:tw-outline tw-outline-none' />
+                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none' />
                 <select v-model="authTransport" required
-                    class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500 focus:tw-outline-blue-500 focus:tw-outline tw-outline-none'>
+                    class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none'>
                     <option value="udp">Protocolo UDP</option>
                     <option value="tcp">Protocolo TCP</option>
                 </select>
