@@ -295,7 +295,7 @@ onUnmounted(() => {
     </transition>
 
     <PopoverButton title='FeedBack' aria-label='FeedBack' id="popoverbutton"
-      class='tw-bg-blue-500 tw-rounded-full tw-px-2 tw-h-14 tw-text-white tw-flex tw-items-center tw-group tw-shadow-[0_0.5rem_1.5rem_#8257e540]'
+      class='tw-bg-blue-500 tw-rounded-full tw-px-2 tw-h-14 tw-min-w-[3.5rem] tw-place-content-center tw-text-white tw-flex tw-items-center tw-group tw-shadow-[0_0.5rem_1.5rem_#8257e540]'
       :class="{ 'tw-animate-pulse tw-bg-orange-500': ['Recebendo chamada', 'Em chamada'].includes(agentStatus), 'tw-bg-orange-500': ['Registro falhou', 'Desconectado'].includes(agentStatus) }">
       <ph-phone :size="32" style="fill: white;" />
 
