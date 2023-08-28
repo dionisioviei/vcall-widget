@@ -38,7 +38,7 @@ const Routes = [{
     icon: PhPhoneCall,
 }, {
     name: 'Login',
-    label: 'Conectar',
+    label: 'Conexão',
     icon: PhSignIn,
 
 }, {
@@ -84,12 +84,12 @@ watchEffect(() => {
             <button
                 v-show="activePage !== 'Menu' && ['Em chamada', 'Recebendo chamada'].includes(props.agentStatus) === false"
                 type='button' title='Voltar' aria-label='Voltar' @click="changePage('Menu')"
-                className='tw-top-4 tw-left-4 tw-absolute text-zinc-400 hover:text-zinc-100 tw-flex tw-flex-row-reverse tw-justify-center tw-items-center'>
+                className='tw-top-4 tw-left-4 tw-absolute text-zinc-400 hover:text-zinc-100 tw-flex tw-flex-row-reverse tw-justify-center tw-items-center  tw-bg-transparent'>
                 Voltar
                 <PhArrowLeft weight='bold' />
             </button>
-            <span class='tw-text-xl tw-leading-6 tw-flex tw-flex-row tw-justify-center tw-items-center'>
-                <PhUser class="tw-mr-2" />{{ nameHeader || 'Conecte-se para ligar' }}
+            <span class='tw-text-xl tw-leading-6 tw-flex tw-flex-row tw-justify-start tw-items-center tw-truncate tw-text-clip tw-overflow-hidden'>
+                <PhUser class="tw-mr-2" />{{ nameHeader || 'Sem usuário' }}
             </span>
 
             <CloseButton />
@@ -98,8 +98,8 @@ watchEffect(() => {
         <div class='tw-flex tw-py-8 tw-gap-2 tw-w-full' v-show="activePage === 'Menu'">
             <button v-for="{ icon, name, label } in Routes" :key="name" type='button' :title="name"
                 @click="changePage(name)"
-                class='tw-bg-zinc-800 tw-rounded-lg tw-py-5 tw-w-24 tw-flex tw-flex-1 tw-flex-col tw-items-center tw-gap-2 tw-border-2 tw-border-transparent
-                hover:tw-border-blue-500 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear disabled:tw-border-0 disabled:tw-opacity-50 disabled:tw-cursor-not-allowed'
+                class='tw-bg-zinc-800 tw-rounded-lg tw-py-5 tw-w-24 tw-flex tw-flex-1 tw-flex-col tw-items-center tw-gap-2 focus:tw-outline tw-outline-none
+                hover:tw-outline-blue-500 focus:tw-outline-blue-500 tw-transition-all tw-duration-400 tw-ease-linear disabled:tw-outline-none disabled:tw-opacity-50 disabled:tw-cursor-not-allowed'
                 :disabled="['Desconectado', 'Conectando...', 'Registro falhou'].includes(props.agentStatus) && name !== 'Login'">
                 <component :is="icon" :size="32" />
                 <span>{{ label }}</span>
