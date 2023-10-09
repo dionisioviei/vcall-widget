@@ -15,6 +15,17 @@ function unscrambleSecret(scrambledSecret: string) {
   return scrambleSecret(scrambledSecret)
 }
 
+function setAudioDevices({
+  ringAudioDeviceId,
+  voiceAudioDeviceId
+}: {
+  ringAudioDeviceId?: string
+  voiceAudioDeviceId?: string
+}) {
+  ringAudioDeviceId && localStorage.setItem('@vcallwidget:ringAudioDeviceId', ringAudioDeviceId)
+  voiceAudioDeviceId && localStorage.setItem('@vcallwidget:voiceAudioDeviceId', voiceAudioDeviceId)
+}
+
 function setCredentials({
   authuser,
   secret,
@@ -36,6 +47,13 @@ function setCredentials({
   localStorage.setItem('@vcallwidget:domain', scrambleSecret(domain))
   localStorage.setItem('@vcallwidget:transport', transport)
   localStorage.setItem('@vcallwidget:name', name)
+}
+
+function getAudioDevices() {
+  const ringAudioDeviceId = localStorage.getItem('@vcallwidget:ringAudioDeviceId')
+  const voiceAudioDeviceId = localStorage.getItem('@vcallwidget:voiceAudioDeviceId')
+
+  return { ringAudioDeviceId, voiceAudioDeviceId }
 }
 
 function credentialsInURL() {
@@ -93,4 +111,4 @@ function getCredentials() {
   return { name, authuser, secret, port, domain, transport }
 }
 
-export { setCredentials, getCredentials }
+export { setCredentials, getCredentials, getAudioDevices, setAudioDevices }

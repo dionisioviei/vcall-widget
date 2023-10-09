@@ -131,10 +131,10 @@ watchEffect(() => {
                         </span>
                     </div>
                     <span v-if="index === 0 && lastCallAudio && currentPage === 1 && call.duration !== '00:00:00'"
-                        class="tw-rounded-md tw-truncate tw-max-h-0 tw-group-hover:tw-max-h-12 tw-transition-all duration-250 tw-ease-in tw-overflow-hidden">
-                        <audio id="lastCallAudioPlayer" ref="lastCallAudioPlayer" class="tw-rounded-md"
+                        class="tw-rounded-md tw-max-h-0 tw-truncate group-hover:tw-max-h-14 tw-transition-all tw-duration-250 tw-ease-in tw-overflow-hidden">
+                        <audio id="lastCallAudioPlayer" ref="lastCallAudioPlayer" class="tw-rounded-md tw-h-8"
                             style="background: transparent;" controls>
-                            <source type="audio/ogg">
+                            <source type="audio/webm">
                             Your browser does not support the audio element.
                         </audio>
                     </span>

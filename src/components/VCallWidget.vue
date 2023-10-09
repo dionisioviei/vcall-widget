@@ -3,7 +3,7 @@ import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';
 import { PhPhone } from "@phosphor-icons/vue";
 import MenuPage from './Pages/MenuPage.vue';
 import { useWebphone } from "@vittelgroup/vwebphone";
-import { getCredentials } from '../store/credentials';
+import { getCredentials, getAudioDevices } from '../store/credentials';
 import { setLastCallRecording, setCallHistory } from '../store/callHistory';
 import { computed, onMounted, onUnmounted, ref, watch, watchEffect, onBeforeUnmount } from 'vue';
 import { formatTime } from '../utils/formatTime';
@@ -11,14 +11,23 @@ import { useNotification } from '../utils/useNotification';
 
 import { playCallingSound, playIncomingCallSound } from '../utils/playCallSounds';
 import IncomingCallIcon from '../assets/incomingcallIcon';
+
+interface HTMLNewMediaElement extends HTMLMediaElement {
+  setSinkId(id: string): Promise<void>
+  sinkId: string
+  captureStream(): MediaStream
+  mozCaptureStream(): MediaStream
+}
+
 const { authuser, secret, domain, port, transport, name } = getCredentials();
 
-const localStream = ref<HTMLMediaElement | null>(null);
-const remoteStream = ref<HTMLMediaElement | null>(null);
+const localStream = ref<HTMLNewMediaElement | null>(null);
+const remoteStream = ref<HTMLNewMediaElement | null>(null);
 const callDuration = ref<null | number>(null);
 const callDurationTimer = ref<null | number>(null);
 const isStatic = ref(false);
 const mediaRecorder = ref<null | MediaRecorder>(null);
+
 const recordedChunks = ref<Blob[]>([]);
 
 // Handle call history
@@ -56,7 +65,7 @@ const {
   debug: 'minimal',
   registerTimeout: 5,
 });
-
+console.log('localStream', localStream.value);
 const agentStatus = computed(() => {
   switch (registerStatus.value) {
     case 'registered':
@@ -174,14 +183,17 @@ watchEffect(() => {
   }
 
   if (extenStatus.value === 'incall' && alertIncomingCallAudio.value) {
+    alertIncomingCallAudio.value.src = '';
+    alertIncomingCallAudio.value.srcObject = null;
     alertIncomingCallAudio.value.pause();
     alertIncomingCallAudio.value = null;
     isStatic.value = false;
     openPopover();
-    mediaRecorder.value?.start();
   }
 
   if (extenStatus.value !== 'incomingcall' && alertIncomingCallAudio.value) {
+    alertIncomingCallAudio.value.src = '';
+    alertIncomingCallAudio.value.srcObject = null;
     alertIncomingCallAudio.value.pause();
     alertIncomingCallAudio.value = null;
     isStatic.value = false;
@@ -197,8 +209,9 @@ watchEffect(() => {
     alertCallAudio.value = playCallingSound();
   }
 
-  if (alertCallAudio.value && extenStatus.value === 'incall') {
-    mediaRecorder.value?.start();
+  if (extenStatus.value === 'incall' && mediaRecorder.value) {
+    console.log('STARTING RECORDING', mediaRecorder.value.stream);
+    mediaRecorder.value.start();
   }
 
   if (extenStatus.value === 'idle') {
@@ -223,32 +236,56 @@ watchEffect(() => {
 })
 
 watchEffect(() => {
-  if (localStream.value && remoteStream.value && mediaRecorder.value === null) {
-    const audioContext = new AudioContext();
+    if (localStream.value && remoteStream.value && mediaRecorder.value === null && extenStatus.value === 'incall') {
 
-    const localMediaStreamSource = audioContext.createMediaElementSource(localStream.value);
-    const remoteMediaStreamSource = audioContext.createMediaElementSource(remoteStream.value);
+    const remoteAudioStream = remoteStream.value.captureStream ? remoteStream.value.captureStream() : remoteStream.value.mozCaptureStream();
+    const localAudioStream = localStream.value.captureStream ? localStream.value.captureStream() : localStream.value.mozCaptureStream();
 
-    const destination = audioContext.createMediaStreamDestination();
-    localMediaStreamSource.connect(destination);
-    remoteMediaStreamSource.connect(destination);
+    remoteAudioStream.onaddtrack = (ev) => {
+      if (localStream.value && remoteStream.value) {
+        const audioContext = new AudioContext();
+        console.log('ON ADD TRACK', ev);
+        const localMediaStreamSource = audioContext.createMediaStreamSource(localAudioStream);
+        const remoteMediaStreamSource = audioContext.createMediaStreamSource(remoteAudioStream);
 
-    const recordedStream = new MediaStream()
-    recordedStream.addTrack(destination.stream.getAudioTracks()[0]);
+        const destination = audioContext.createMediaStreamDestination();
+        localMediaStreamSource.connect(destination);
+        remoteMediaStreamSource.connect(destination);
 
-    mediaRecorder.value = new MediaRecorder(recordedStream);
-    mediaRecorder.value.ondataavailable = (event) => {
-      recordedChunks.value.push(event.data);
-    };
+        const recordedStream = new MediaStream()
+        recordedStream.addTrack(destination.stream.getAudioTracks()[0]);
 
-    mediaRecorder.value.onstop = () => {
-      const recordedBlob = new Blob(recordedChunks.value, { type: 'audio/webm' });
-      recordedChunks.value = [];
-      setLastCallRecording(recordedBlob);
+        mediaRecorder.value = new MediaRecorder(recordedStream);
+        mediaRecorder.value.ondataavailable = (event) => {
+          recordedChunks.value.push(event.data);
+        };
 
-    };
+        mediaRecorder.value.onstop = () => {
+          const recordedBlob = new Blob(recordedChunks.value, { type: 'audio/webm' });
+          recordedChunks.value = [];
+          setLastCallRecording(recordedBlob);
+
+        }
+      }
+    }
   }
 });
+
+watchEffect(() => {
+  const { voiceAudioDeviceId } = getAudioDevices();
+    if (voiceAudioDeviceId && voiceAudioDeviceId !== 'default' && ['incomingcall', 'calling'].includes(extenStatus.value) && remoteStream.value) {
+      remoteStream.value.srcObject = null; // Remove janus source so it can update the sinkid (output device)
+      remoteStream.value.setSinkId(voiceAudioDeviceId).catch(err => console.log({err}));
+    }
+})
+
+onMounted(() => {
+  const { voiceAudioDeviceId } = getAudioDevices();
+
+  if (voiceAudioDeviceId && voiceAudioDeviceId !== 'default' && remoteStream.value) {
+    remoteStream.value.setSinkId(voiceAudioDeviceId).catch(err => console.log({err}));
+  }
+})
 
 function openPopover() {
   const popoverEl = document.querySelector('div[data-headlessui-state]');
@@ -306,8 +343,8 @@ onUnmounted(() => {
         {{ agentStatus === 'Em chamada' ? `Em chamada ${formatTime(callDuration || 0)} ` :
           (['Recebendo chamada'].includes(agentStatus) ? 'Recebendo chamada' : 'Fazer uma ligação') }}
       </span>
-      <audio ref="localStream" autoplay playsinline muted v-show="false"></audio>
-      <audio ref="remoteStream" autoplay playsinline v-show="false"></audio>
+      <audio ref="localStream" id="localStream" autoplay playsinline muted v-show="false"></audio>
+      <audio ref="remoteStream" id="remoteStream" autoplay playsinline v-show="false"></audio>
     </PopoverButton>
   </Popover>
 </template>

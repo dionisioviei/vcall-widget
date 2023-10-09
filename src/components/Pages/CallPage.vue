@@ -67,7 +67,7 @@ onUnmounted(() => {
             </span>
 
             <form class='tw-my-4 tw-w-full' @submit.prevent="handleCall">
-                <input type="text" ref="numberToCallInput" placeholder='Digite um número' :required="true"
+                <input type="text" ref="numberToCallInput" placeholder='Digite um número' :required="true" autocomplete="tel tel-extension tel-local tel-national mobile"
                     v-model="numberToCall"
                     class='md:tw-min-w-[304px] tw-w-full tw-h-14 tw-p-0 tw-text-2xl tw-text-center tw-placeholder-zinc-400 tw-text-zinc-100 border-zinc-800 tw-bg-zinc-800 focus:tw-bg-zinc-800 tw-rounded-md focus:tw-border-blue-500 focus:tw-ring-blue-500 focus:tw-ring-1 focus:tw-outline-none' />
 
