@@ -5,7 +5,7 @@ import MenuPage from './Pages/MenuPage.vue';
 import { useWebphone } from "@vittelgroup/vwebphone";
 import { getCredentials, getAudioDevices } from '../store/credentials';
 import { setLastCallRecording, setCallHistory } from '../store/callHistory';
-import { computed, onMounted, onUnmounted, ref, watch, watchEffect, onBeforeUnmount } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch, watchEffect } from 'vue';
 import { formatTime } from '../utils/formatTime';
 import { useNotification } from '../utils/useNotification';
 
@@ -183,18 +183,18 @@ watchEffect(() => {
   }
 
   if (extenStatus.value === 'incall' && alertIncomingCallAudio.value) {
+    alertIncomingCallAudio.value.pause();
     alertIncomingCallAudio.value.src = '';
     alertIncomingCallAudio.value.srcObject = null;
-    alertIncomingCallAudio.value.pause();
     alertIncomingCallAudio.value = null;
     isStatic.value = false;
     openPopover();
   }
 
   if (extenStatus.value !== 'incomingcall' && alertIncomingCallAudio.value) {
+    alertIncomingCallAudio.value.pause();
     alertIncomingCallAudio.value.src = '';
     alertIncomingCallAudio.value.srcObject = null;
-    alertIncomingCallAudio.value.pause();
     alertIncomingCallAudio.value = null;
     isStatic.value = false;
   }
@@ -223,10 +223,8 @@ watchEffect(() => {
 
 watchEffect(() => {
   if (extenStatus.value !== 'calling' && alertCallAudio.value) {
-    setTimeout(() => {
       alertCallAudio.value?.pause();
       alertCallAudio.value = null;
-    }, 100);
   }
 
   if (alertCallAudio.value && extenStatus.value === 'incall') {
@@ -298,19 +296,6 @@ function openPopover() {
 
   }
 }
-
-// function autoUnregister() {
-//   console.warn('UNREGISTERING');
-//   unregister();
-// }
-
-// onMounted(() => {
-//   window.addEventListener('beforeunload', autoUnregister);
-// })
-
-// onBeforeUnmount(() => {
-//   window.removeEventListener('beforeunload', autoUnregister);
-// });
 
 onUnmounted(() => {
   callDurationTimer.value && clearTimeout(callDurationTimer.value);
