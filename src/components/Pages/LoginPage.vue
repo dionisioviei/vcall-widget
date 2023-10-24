@@ -143,7 +143,7 @@ watchEffect(() => {
                 name: device.label,
                 deviceId: device.deviceId
             }));
-            console.log({outputDevices});
+            console.log({devices});
         })
         .catch(error => {
         console.error('Error enumerating devices:', error);
