@@ -38,7 +38,7 @@ const useNotification = (
     }
     const notification = new Notification(title, options)
     if (expireTime) {
-      timeoutId.value = setTimeout(() => {
+      timeoutId.value = window.setTimeout(() => {
         notification.close()
       }, expireTime)
     }

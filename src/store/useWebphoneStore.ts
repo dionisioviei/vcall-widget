@@ -249,7 +249,7 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
 
   function startTimer() {
     if (inCallStatus.value.inCall && extenStatus.value === 'incall') {
-      callDurationTimer.value = setTimeout(() => {
+      callDurationTimer.value = window.setTimeout(() => {
         callDuration.value = callDuration.value + 1
         startTimer()
       }, 1000)
