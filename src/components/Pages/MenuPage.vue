@@ -51,6 +51,7 @@ const Routes = [{
 type RouteName = typeof Routes[number]['name'] | "Menu";
 
 const activePage = ref<RouteName>("Menu");
+const click2call = ref<undefined | string>(undefined);
 
 function changePage(page: RouteName) {
     activePage.value = page;
@@ -88,7 +89,8 @@ watchEffect(() => {
                 Voltar
                 <PhArrowLeft weight='bold' />
             </button>
-            <span class='tw-text-xl tw-leading-6 tw-flex tw-flex-row tw-justify-start tw-items-center tw-truncate tw-text-clip tw-overflow-hidden'>
+            <span
+                class='tw-text-xl tw-leading-6 tw-flex tw-flex-row tw-justify-start tw-items-center tw-truncate tw-text-clip tw-overflow-hidden'>
                 <PhUser class="tw-mr-2" />{{ nameHeader || 'Sem usuário' }}
             </span>
 
@@ -109,7 +111,7 @@ watchEffect(() => {
         <CallPage :show="activePage === 'Call'" :answer="props.answer" :hangup="props.hangup" :sendDTMF="props.sendDTMF"
             :toggleHold="props.toggleHold" :toggleMute="props.toggleMute" :startCall="props.startCall"
             :inCallStatus="props.inCallStatus" :callDuration="callDuration" :agentStatus="props.agentStatus"
-            :extenStatus="props.extenStatus" />
+            :extenStatus="props.extenStatus" :click2call="click2call" />
         <LoginPage :show="activePage === 'Login'" :register="props.register" :unregister="props.unregister"
             :agentStatus="agentStatus" />
         <HistoryPage :show="activePage === 'History'" />

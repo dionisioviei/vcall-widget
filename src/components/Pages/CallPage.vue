@@ -12,7 +12,7 @@ const commandBtnTimer = ref(0);
 const focusTimeout = ref<null | number>(null);
 
 const props = defineProps<{
-    show: boolean; callDuration: null | number; extenStatus: string; agentStatus: string; inCallStatus: {
+    show: boolean; callDuration: null | number; extenStatus: string; agentStatus: string; click2call: undefined | string; inCallStatus: {
         inCall: boolean;
         status?: {
             muted: boolean;
@@ -47,6 +47,12 @@ function handleSendDTMF() {
 watchEffect(() => {
     if (props.show && numberToCallInput.value) {
         focusTimeout.value = window.setTimeout(() => numberToCallInput.value?.focus());
+    }
+});
+watchEffect(() => {
+    if (props.click2call) {
+        numberToCall.value = props.click2call;
+        handleCall();
     }
 });
 
@@ -150,6 +156,7 @@ onUnmounted(() => {
                     <PhPhoneDisconnect :size="32" />
                     <span>Desligar</span>
                 </button>
+            </div>
         </div>
     </div>
-</div></template>
+</template>

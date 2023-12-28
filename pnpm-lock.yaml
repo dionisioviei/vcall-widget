@@ -12,11 +12,14 @@ dependencies:
     specifier: ^2.1.6
     version: 2.1.6(vue@3.3.13)
   '@vittelgroup/vwebphone':
-    specifier: ^1.2.4
-    version: 1.2.4(typescript@5.3.3)
+    specifier: ^1.2.5
+    version: 1.2.5(typescript@5.3.3)
   js-base64:
     specifier: ^3.7.5
     version: 3.7.5
+  libphonenumber-js:
+    specifier: ^1.10.53
+    version: 1.10.53
   pinia:
     specifier: ^2.1.7
     version: 2.1.7(typescript@5.3.3)(vue@3.3.13)
@@ -1263,8 +1266,8 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
-  /@vittelgroup/vwebphone@1.2.4(typescript@5.3.3):
-    resolution: {integrity: sha512-pKWPIRmIzoy3OXVrmL2yoziuz7GqLcjijpYoL4UDZbtjsmoTrDMrbLHH3I25G4fkGXZGwXEflCaeDb6UGd78sA==, tarball: https://npm.pkg.github.com/download/@vittelgroup/vwebphone/1.2.4/67f1b2879b81e8aebb1dac9cf4dab4fc0995d5af}
+  /@vittelgroup/vwebphone@1.2.5(typescript@5.3.3):
+    resolution: {integrity: sha512-96LZCFJTNYYmJNCw//0xK78h47ZqA8zBb5/UHnbsR3msI7MQp+ZxNxzd2UomFaVRiR/1RLZGP/8hlUGR2h/HDQ==, tarball: https://npm.pkg.github.com/download/@vittelgroup/vwebphone/1.2.5/a62be4444a11d7a0e3ff552a0c9d12f8efd435b7}
     dependencies:
       vue: 3.3.13(typescript@5.3.3)
       webrtc-adapter: 7.7.1
@@ -3410,6 +3413,10 @@ packages:
       prelude-ls: 1.2.1
       type-check: 0.4.0
     dev: true
+
+  /libphonenumber-js@1.10.53:
+    resolution: {integrity: sha512-sDTnnqlWK4vH4AlDQuswz3n4Hx7bIQWTpIcScJX+Sp7St3LXHmfiax/ZFfyYxHmkdCvydOLSuvtAO/XpXiSySw==}
+    dev: false
 
   /lilconfig@2.1.0:
     resolution: {integrity: sha512-utWOt/GHzuUxnLKxB6dk81RoOeoNeHgbrXiuGk4yyF5qlRz+iIVWu56E2fqGHFrXz0QNUhLB/8nKqvRH66JKGQ==}
