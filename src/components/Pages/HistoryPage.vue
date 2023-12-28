@@ -89,11 +89,11 @@ watchEffect(() => {
                 @click="() => currentPage = currentPage <= 1 ? maxPages : currentPage - 1">
                 <PhArrowCircleLeft :size="24" />
             </button>
-            <input type="number"
+            <input type="number" autocomplete="off"
                 class="w-[52px] hover:tw-outline-blue-500 hover:tw-outline tw-outline-none tw-rounded-md tw-bg-zinc-800 tw-text-center tw-appearance-none"
                 placeholder="1" @keyup="handlePageChange" :value="currentPage" />
             <span class="tw-text-xl tw-font-bold">/</span>
-            <input type="text"
+            <input type="text" autocomplete="off"
                 class="w-[52px] tw-font-bold hover:tw-outline-blue-500 hover:tw-outline tw-outline-none tw-rounded-md tw-bg-zinc-800 focus:tw-bg-zinc-800 active:tw-bg-zinc-800 tw-text-center tw-italic"
                 v-model="maxPages" disabled />
             <button
@@ -108,7 +108,8 @@ watchEffect(() => {
         <div class='tw-my-4 tw-w-full tw-flex tw-flex-col tw-gap-2 tw-min-w-[425px] tw-rounded-lg'>
             <ul
                 class="scroll-smooth tw-text-zinc-200 tw-p-4 tw-max-h-[250px] tw-overflow-scroll tw-overflow-x-hidden scrollbar-thumb-zinc-700 scrollbar-track-transparent scrollbar-thin">
-                <span v-show="callHistory && callHistory.length <= 0" class="tw-italic tw-w-full tw-text-center"> Nenhuma chamada
+                <span v-show="callHistory && callHistory.length <= 0" class="tw-italic tw-w-full tw-text-center"> Nenhuma
+                    chamada
                 </span>
                 <span v-show="callHistory && callHistory.length > 0 && currentPage === 1"
                     class="tw-flex tw-flex-row tw-items-center tw-justify-start">Última chamada

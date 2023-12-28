@@ -42,16 +42,16 @@ function handleChooseRingAudio() {
     if (isFirefox.value) {
         const devices = navigator.mediaDevices as NewMediaDevices;
         devices.selectAudioOutput().then((device) => {
-        if (device.deviceId) {
-            setAudioDevices({
-                ringAudioDeviceId: device.deviceId
+            if (device.deviceId) {
+                setAudioDevices({
+                    ringAudioDeviceId: device.deviceId
+                });
+            }
+        })
+            .catch((err) => {
+                console.error(`${err.name}: ${err.message}`);
             });
-        }
-    })
-    .catch((err) => {
-      console.error(`${err.name}: ${err.message}`);
-    });
-    return;
+        return;
     }
 }
 
@@ -59,15 +59,15 @@ function handleChooseVoiceAudio() {
     if (isFirefox.value) {
         const devices = navigator.mediaDevices as NewMediaDevices;
         devices.selectAudioOutput().then((device) => {
-        if (device.deviceId) {
-            setAudioDevices({
-                voiceAudioDeviceId: device.deviceId
-            });
+            if (device.deviceId) {
+                setAudioDevices({
+                    voiceAudioDeviceId: device.deviceId
+                });
             }
         })
-        .catch((err) => {
-        console.error(`${err.name}: ${err.message}`);
-        });
+            .catch((err) => {
+                console.error(`${err.name}: ${err.message}`);
+            });
         return;
     }
 }
@@ -98,16 +98,16 @@ function handleLogout() {
 function askPermission() {
     if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
         navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(function() {
-            hasMicPermission.value = true;
-            
-        })
-        .catch(function() {
-            hasMicPermission.value = false;
-        });
+            .then(function () {
+                hasMicPermission.value = true;
+
+            })
+            .catch(function () {
+                hasMicPermission.value = false;
+            });
     } else {
         hasMicPermission.value = false;
-    console.error('getUserMedia is not supported in this browser.');
+        console.error('getUserMedia is not supported in this browser.');
     }
 }
 
@@ -137,17 +137,17 @@ function handleOutputAudioUpdate() {
 watchEffect(() => {
     if (hasMicPermission.value) {
         navigator.mediaDevices.enumerateDevices()
-        .then(devices => {
-        const outputDevices = devices.filter(device => device.kind === 'audiooutput');
-            speakers.value = outputDevices.map(device => ({
-                name: device.label,
-                deviceId: device.deviceId
-            }));
-            console.log({devices});
-        })
-        .catch(error => {
-        console.error('Error enumerating devices:', error);
-        });
+            .then(devices => {
+                const outputDevices = devices.filter(device => device.kind === 'audiooutput');
+                speakers.value = outputDevices.map(device => ({
+                    name: device.label,
+                    deviceId: device.deviceId
+                }));
+                console.log({ devices });
+            })
+            .catch(error => {
+                console.error('Error enumerating devices:', error);
+            });
     }
 });
 
@@ -158,23 +158,23 @@ onMounted(() => {
 })
 
 onMounted(() => {
-if ('mediaDevices' in navigator && 'enumerateDevices' in navigator.mediaDevices) {
-  navigator.mediaDevices.enumerateDevices()
-    .then(devices => {
-      const microphones = devices.filter(device => device.kind === 'audioinput');
-      const isAllDevicesEmpty = microphones.map(mic => mic.deviceId).join('');
-      if (microphones.length <= 0 || isAllDevicesEmpty === '') {
-        askPermission();
-      } else {
-        hasMicPermission.value = true;
-      }
-    })
-    .catch(error => {
-      console.error('Error enumerating devices:', error);
-    });
-} else {
-  console.error('enumerateDevices is not supported in this browser.');
-}
+    if ('mediaDevices' in navigator && 'enumerateDevices' in navigator.mediaDevices) {
+        navigator.mediaDevices.enumerateDevices()
+            .then(devices => {
+                const microphones = devices.filter(device => device.kind === 'audioinput');
+                const isAllDevicesEmpty = microphones.map(mic => mic.deviceId).join('');
+                if (microphones.length <= 0 || isAllDevicesEmpty === '') {
+                    askPermission();
+                } else {
+                    hasMicPermission.value = true;
+                }
+            })
+            .catch(error => {
+                console.error('Error enumerating devices:', error);
+            });
+    } else {
+        console.error('enumerateDevices is not supported in this browser.');
+    }
 });
 
 </script>
@@ -187,17 +187,19 @@ if ('mediaDevices' in navigator && 'enumerateDevices' in navigator.mediaDevices)
 
         <form class='tw-my-4 tw-w-full tw-flex tw-flex-col tw-gap-2' @submit.prevent="handleSubmit">
             <div class="tw-flex tw-flex-row tw-gap-2">
-                <input type="text" placeholder='Nome' v-model="authName" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
+                <input type="text" placeholder='Nome' v-model="authName" autocomplete="name" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
                  focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none' />
-                <input type="text" placeholder='Usuário ou Ramal' :required="true" v-model="authUsername" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
+                <input type="text" placeholder='Usuário ou Ramal' :required="true" autocomplete="tel-extension username"
+                    v-model="authUsername" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
                  focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none' />
             </div>
-            <input type="password" placeholder='Senha' :required="true" v-model="authSecret" class='md:tw-min-w-[304px] tw-w-full tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
+            <input type="password" placeholder='Senha' :required="true" v-model="authSecret" autocomplete="current-password"
+                class='md:tw-min-w-[304px] tw-w-full tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
                  focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none' />
-            <input type="text" placeholder='Domínio' :required="true" v-model="authDomain" class='md:tw-min-w-[304px] tw-w-full tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
+            <input type="text" placeholder='Domínio' :required="true" v-model="authDomain" autocomplete="url" class='md:tw-min-w-[304px] tw-w-full tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
                  focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none' />
             <div class="tw-flex tw-flex-row tw-gap-2">
-                <input type="number" placeholder='Porta' :required="true" v-model="authPort" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
+                <input type="number" placeholder='Porta' :required="true" v-model="authPort" autocomplete="off" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
                  focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none' />
                 <select v-model="authTransport" required
                     class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none'>
@@ -206,22 +208,24 @@ if ('mediaDevices' in navigator && 'enumerateDevices' in navigator.mediaDevices)
                 </select>
             </div>
             <span class='tw-text-xl tw-leading-4 tw-flex tw-items-center tw-gap-2 tw-my-4'>
-            Saídas de Áudio
+                Saídas de Áudio
             </span>
             <div class="tw-flex tw-flex-row tw-gap-2">
                 <div v-if="!isFirefox" class="tw-flex tw-flex-row tw-justify-center tw-items-center">
-                    <div class="tw-bg-zinc-800 tw-h-10 tw-flex tw-justify-center tw-items-center tw-rounded-l-md tw-border-r-2 tw-border-zinc-900 tw-p-2 tw-text-xs tw-font-bold" >
+                    <div
+                        class="tw-bg-zinc-800 tw-h-10 tw-flex tw-justify-center tw-items-center tw-rounded-l-md tw-border-r-2 tw-border-zinc-900 tw-p-2 tw-text-xs tw-font-bold">
                         Toque
                     </div>
                     <select v-model="ringAudioDeviceId" required
-                    class='md:tw-min-w-[100px] tw-w-40 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-r-md focus:tw-border-zinc-500 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none'>
+                        class='md:tw-min-w-[100px] tw-w-40 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-r-md focus:tw-border-zinc-500 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none'>
                         <option v-for="speaker in speakers" :value="speaker.deviceId" :key="speaker.deviceId">
                             {{ speaker.name }}
                         </option>
                     </select>
                 </div>
                 <div v-if="!isFirefox" class="tw-flex tw-flex-row tw-justify-center tw-items-center">
-                    <div class="tw-bg-zinc-800 tw-h-10 tw-flex tw-justify-center tw-items-center tw-rounded-l-md tw-border-r-2 tw-border-zinc-900 tw-p-2 tw-text-xs tw-font-bold" >
+                    <div
+                        class="tw-bg-zinc-800 tw-h-10 tw-flex tw-justify-center tw-items-center tw-rounded-l-md tw-border-r-2 tw-border-zinc-900 tw-p-2 tw-text-xs tw-font-bold">
                         Voz
                     </div>
                     <select v-model="voiceAudioDeviceId" required
@@ -232,22 +236,21 @@ if ('mediaDevices' in navigator && 'enumerateDevices' in navigator.mediaDevices)
                     </select>
                 </div>
                 <span v-if="!isFirefox" class='tw-text-xl tw-leading-6 tw-flex tw-items-center tw-gap-2 tw-my-4'>
-                    <button v-if="!isFirefox"  type='button' title='Atualizar' aria-labelledby='Atualizar'
+                    <button v-if="!isFirefox" type='button' title='Atualizar' aria-labelledby='Atualizar'
                         @click="handleOutputAudioUpdate"
                         class='tw-bg-zinc-800 tw-rounded-lg tw-py-1 tw-px-2 tw-h-10 tw-w-fit tw-flex tw-flex-1 tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-border-2 tw-border-transparent
                 hover:tw-border-blue-500 tw-text-green-500 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear'>
-                    <PhArrowsClockwise :size="20" />
-                </button>
+                        <PhArrowsClockwise :size="20" />
+                    </button>
                 </span>
-                <button v-if="isFirefox"  type='button' title='Ao Tocar' aria-labelledby='Ao Tocar'
-                        @click="handleChooseRingAudio"
-                        class='tw-bg-zinc-800 tw-rounded-lg tw-py-1 tw-w-24 tw-flex tw-flex-1 tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-border-2 tw-border-transparent
+                <button v-if="isFirefox" type='button' title='Ao Tocar' aria-labelledby='Ao Tocar'
+                    @click="handleChooseRingAudio"
+                    class='tw-bg-zinc-800 tw-rounded-lg tw-py-1 tw-w-24 tw-flex tw-flex-1 tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-border-2 tw-border-transparent
                 hover:tw-border-blue-500 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear'>
                     <PhPhoneCall :size="20" />Ao Tocar
                 </button>
-                <button v-if="isFirefox" type='button' title='Voz' aria-labelledby='Voz'
-                        @click="handleChooseVoiceAudio"
-                        class='tw-bg-zinc-800 tw-rounded-lg tw-py-1 tw-w-24 tw-flex tw-flex-1 tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-border-2 tw-border-transparent
+                <button v-if="isFirefox" type='button' title='Voz' aria-labelledby='Voz' @click="handleChooseVoiceAudio"
+                    class='tw-bg-zinc-800 tw-rounded-lg tw-py-1 tw-w-24 tw-flex tw-flex-1 tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-border-2 tw-border-transparent
                 hover:tw-border-blue-500 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear'>
                     <PhWaveform :size="20" />Voz
                 </button>

@@ -116,7 +116,7 @@ onUnmounted(() => {
                 <div class="tw-flex tw-flex-col">
                     <input type="text" placeholder="*2"
                         class="tw-w-28 tw-rounded-t-lg tw-bg-zinc-700 tw-p-2 tw-shadow-inner tw-shadow-zinc-900 tw-h-15"
-                        v-model="dtmfCommand" @keyup.enter="handleSendDTMF" required />
+                        autocomplete="tel-extension" v-model="dtmfCommand" @keyup.enter="handleSendDTMF" required />
                     <button ref="commandRef" type='button'
                         class='tw-bg-zinc-800 tw-rounded-b-lg tw-py-2 tw-w-28 tw-flex tw-flex-1 tw-flex-col tw-items-center tw-gap-2 tw-border-2 tw-border-transparent
                 hover:tw-border-blue-500 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear'
