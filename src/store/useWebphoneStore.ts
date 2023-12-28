@@ -119,8 +119,6 @@ export interface UseWebphoneStore {
 }
 
 export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => {
-  const { authuser, secret, domain, port, transport, name } = getCredentials()
-
   const localStream = ref<HTMLNewMediaElement>(new Audio() as HTMLNewMediaElement)
   const remoteStream = ref<HTMLNewMediaElement>(new Audio() as HTMLNewMediaElement)
 
@@ -175,7 +173,7 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
     localStreamElement: localStream,
     remoteStreamElement: remoteStream,
     debug: 'minimal',
-    registerTimeout: 5
+    registerTimeout: 30
   })
 
   const agentStatus = computed(() => {
@@ -236,6 +234,7 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
 
   watch(janusStatus, () => {
     console.warn({ janusStatus: janusStatus.value })
+    const { authuser, secret, domain, port, transport, name } = getCredentials()
     if (authuser && secret && domain && janusStatus.value === 'connected') {
       register({
         authuser,
