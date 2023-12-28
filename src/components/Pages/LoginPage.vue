@@ -188,19 +188,19 @@ onMounted(() => {
         <form class='tw-my-4 tw-w-full tw-flex tw-flex-col tw-gap-2' @submit.prevent="handleSubmit">
             <div class="tw-flex tw-flex-row tw-gap-2 tw-mb-0">
                 <input type="text" placeholder='Nome' v-model="authName" autocomplete="name" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
-                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none' />
+                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none tw-mb-0' />
                 <input type="text" placeholder='Usuário ou Ramal' :required="true" autocomplete="tel-extension username"
                     v-model="authUsername" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
-                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none' />
+                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none tw-mb-0' />
             </div>
             <input type="password" placeholder='Senha' :required="true" v-model="authSecret" autocomplete="current-password"
                 class='md:tw-min-w-[304px] tw-w-full tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
-                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none' />
+                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none tw-mb-0' />
             <input type="text" placeholder='Domínio' :required="true" v-model="authDomain" autocomplete="url" class='md:tw-min-w-[304px] tw-w-full tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
-                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none' />
+                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none tw-mb-0' />
             <div class="tw-flex tw-flex-row tw-gap-2 tw-mb-1">
                 <input type="number" placeholder='Porta' :required="true" v-model="authPort" autocomplete="off" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
-                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none' />
+                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none tw-mb-0' />
                 <select v-model="authTransport" required
                     class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none'>
                     <option value="udp">Protocolo UDP</option>
