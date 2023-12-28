@@ -28,7 +28,7 @@ function click2Call(event: MouseEvent) {
       if (click2CallRecentlyCalled.value) return;
 
       click2CallRecentlyCalled.value = true;
-      click2CallTimer.value = setTimeout(() => {
+      click2CallTimer.value = window.setTimeout(() => {
         click2CallRecentlyCalled.value = false;
       }, 2500);
 
