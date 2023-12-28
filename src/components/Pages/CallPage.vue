@@ -39,14 +39,14 @@ function handleSendDTMF() {
     }
     commandBtnDisabled.value = true;
     props.sendDTMF(dtmfCommand.value)
-    commandBtnTimer.value = setTimeout(() => {
+    commandBtnTimer.value = window.setTimeout(() => {
         commandBtnDisabled.value = false;
     }, 1500);
 }
 
 watchEffect(() => {
     if (props.show && numberToCallInput.value) {
-        focusTimeout.value = setTimeout(() => numberToCallInput.value?.focus());
+        focusTimeout.value = window.setTimeout(() => numberToCallInput.value?.focus());
     }
 });
 
@@ -67,8 +67,8 @@ onUnmounted(() => {
             </span>
 
             <form class='tw-my-4 tw-w-full' @submit.prevent="handleCall">
-                <input type="text" ref="numberToCallInput" placeholder='Digite um número' :required="true" autocomplete="tel tel-extension tel-local tel-national mobile"
-                    v-model="numberToCall"
+                <input type="text" ref="numberToCallInput" placeholder='Digite um número' :required="true"
+                    autocomplete="tel tel-extension tel-local tel-national mobile" v-model="numberToCall"
                     class='md:tw-min-w-[304px] tw-w-full tw-h-14 tw-p-0 tw-text-2xl tw-text-center tw-placeholder-zinc-400 tw-text-zinc-100 border-zinc-800 tw-bg-zinc-800 focus:tw-bg-zinc-800 tw-rounded-md focus:tw-border-blue-500 focus:tw-ring-blue-500 focus:tw-ring-1 focus:tw-outline-none' />
 
                 <div class='tw-flex tw-gap-2 tw-mt-2'>
@@ -91,14 +91,16 @@ onUnmounted(() => {
                 </span>
             </span>
             <div class='tw-flex tw-py-8 tw-gap-2 tw-w-full'>
-                <button type='button' class='tw-rounded-lg tw-py-5 tw-w-24 tw-flex tw-flex-1 tw-flex-col tw-justify-center tw-items-center tw-gap-2 tw-border-2 tw-border-transparent
+                <button type='button'
+                    class='tw-rounded-lg tw-py-5 tw-w-24 tw-flex tw-flex-1 tw-flex-col tw-justify-center tw-items-center tw-gap-2 tw-border-2 tw-border-transparent
                 hover:tw-border-blue-500 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear'
                     :class="{ 'tw-bg-orange-500': props.inCallStatus.status?.onHold, 'tw-bg-zinc-800': !props.inCallStatus.status?.onHold, 'tw-opacity-50 tw-cursor-not-allowed': props.extenStatus !== 'incall' }"
                     @click="props.toggleHold" :disabled="props.extenStatus !== 'incall'">
                     <PhPause :size="32" />
                     <span>{{ props.inCallStatus.status?.onHold ? 'Em espera' : 'Espera' }}</span>
                 </button>
-                <button type='button' class='tw-rounded-lg tw-py-5 tw-w-28 tw-flex tw-flex-1 tw-flex-col tw-justify-center tw-items-center tw-gap-2 tw-border-2 tw-border-transparent
+                <button type='button'
+                    class='tw-rounded-lg tw-py-5 tw-w-28 tw-flex tw-flex-1 tw-flex-col tw-justify-center tw-items-center tw-gap-2 tw-border-2 tw-border-transparent
                 hover:tw-border-blue-500 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear'
                     :class="{ 'tw-bg-orange-500': props.inCallStatus.status?.muted, 'tw-bg-zinc-800': !props.inCallStatus.status?.muted, 'tw-opacity-50 tw-cursor-not-allowed': props.extenStatus !== 'incall' }"
                     @click="props.toggleMute" :disabled="props.extenStatus !== 'incall'">
@@ -107,9 +109,10 @@ onUnmounted(() => {
                 </button>
                 <div class="tw-flex tw-flex-col">
                     <input type="text" placeholder="*2"
-                        class="tw-w-28 tw-rounded-t-lg tw-bg-zinc-700 tw-p-2 tw-shadow-inner tw-shadow-zinc-900 tw-h-15" v-model="dtmfCommand"
-                        @keyup.enter="handleSendDTMF" required />
-                    <button ref="commandRef" type='button' class='tw-bg-zinc-800 tw-rounded-b-lg tw-py-2 tw-w-28 tw-flex tw-flex-1 tw-flex-col tw-items-center tw-gap-2 tw-border-2 tw-border-transparent
+                        class="tw-w-28 tw-rounded-t-lg tw-bg-zinc-700 tw-p-2 tw-shadow-inner tw-shadow-zinc-900 tw-h-15"
+                        v-model="dtmfCommand" @keyup.enter="handleSendDTMF" required />
+                    <button ref="commandRef" type='button'
+                        class='tw-bg-zinc-800 tw-rounded-b-lg tw-py-2 tw-w-28 tw-flex tw-flex-1 tw-flex-col tw-items-center tw-gap-2 tw-border-2 tw-border-transparent
                 hover:tw-border-blue-500 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear'
                         :class="{ 'tw-opacity-50 tw-cursor-not-allowed': props.extenStatus !== 'incall' || commandBtnDisabled }"
                         @click="handleSendDTMF" :disabled="props.extenStatus !== 'incall' || commandBtnDisabled">
@@ -117,7 +120,8 @@ onUnmounted(() => {
                         <span>Discar</span>
                     </button>
                 </div>
-                <button type='button' class='tw-bg-red-800 tw-rounded-lg tw-py-5 tw-w-28 tw-flex tw-flex-1 tw-flex-col tw-justify-center tw-items-center tw-gap-2 tw-border-2 tw-border-transparent
+                <button type='button'
+                    class='tw-bg-red-800 tw-rounded-lg tw-py-5 tw-w-28 tw-flex tw-flex-1 tw-flex-col tw-justify-center tw-items-center tw-gap-2 tw-border-2 tw-border-transparent
                 hover:tw-border-blue-500 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear'
                     @click="props.hangup">
                     <PhPhoneDisconnect :size="32" />
@@ -132,19 +136,20 @@ onUnmounted(() => {
                     props.inCallStatus.status?.number }}</span>
             </span>
             <div class='tw-flex tw-py-8 tw-gap-2 tw-w-full'>
-                <button type='button' class='tw-bg-green-800 tw-rounded-lg tw-py-5 tw-w-24 tw-flex tw-flex-1 tw-flex-col tw-justify-center tw-items-center tw-gap-2 tw-border-2 tw-border-transparent
+                <button type='button'
+                    class='tw-bg-green-800 tw-rounded-lg tw-py-5 tw-w-24 tw-flex tw-flex-1 tw-flex-col tw-justify-center tw-items-center tw-gap-2 tw-border-2 tw-border-transparent
                 hover:tw-border-blue-500 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear'
                     @click="props.answer">
                     <PhPhoneCall :size="32" />
                     <span>Atender</span>
                 </button>
-                <button type='button' class='tw-bg-red-800 tw-rounded-lg tw-py-5 tw-w-28 tw-flex tw-flex-1 tw-flex-col tw-justify-center tw-items-center tw-gap-2 tw-border-2 tw-border-transparent
+                <button type='button'
+                    class='tw-bg-red-800 tw-rounded-lg tw-py-5 tw-w-28 tw-flex tw-flex-1 tw-flex-col tw-justify-center tw-items-center tw-gap-2 tw-border-2 tw-border-transparent
                 hover:tw-border-blue-500 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear'
                     @click="props.hangup">
                     <PhPhoneDisconnect :size="32" />
                     <span>Desligar</span>
                 </button>
-            </div>
         </div>
     </div>
-</template>
+</div></template>
