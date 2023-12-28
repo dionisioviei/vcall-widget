@@ -12,8 +12,8 @@ dependencies:
     specifier: ^2.1.6
     version: 2.1.6(vue@3.3.13)
   '@vittelgroup/vwebphone':
-    specifier: ^1.2.5
-    version: 1.2.5(typescript@5.3.3)
+    specifier: ^1.2.6
+    version: 1.2.6(typescript@5.3.3)
   js-base64:
     specifier: ^3.7.5
     version: 3.7.5
@@ -1266,9 +1266,10 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
-  /@vittelgroup/vwebphone@1.2.5(typescript@5.3.3):
-    resolution: {integrity: sha512-96LZCFJTNYYmJNCw//0xK78h47ZqA8zBb5/UHnbsR3msI7MQp+ZxNxzd2UomFaVRiR/1RLZGP/8hlUGR2h/HDQ==, tarball: https://npm.pkg.github.com/download/@vittelgroup/vwebphone/1.2.5/a62be4444a11d7a0e3ff552a0c9d12f8efd435b7}
+  /@vittelgroup/vwebphone@1.2.6(typescript@5.3.3):
+    resolution: {integrity: sha512-+G9aSMsCe5Zt40PNTB6wPO/Tc9qDjY3Q1rZvxM5Tf1BWeJkToJsKo2JT99VBAgNY+3Viuc+TtyzgsGwEi08cdw==, tarball: https://npm.pkg.github.com/download/@vittelgroup/vwebphone/1.2.6/e2f20ef69b46fc12a7b559c2cf4a06686dd1250f}
     dependencies:
+      nanoid: 5.0.4
       vue: 3.3.13(typescript@5.3.3)
       webrtc-adapter: 7.7.1
     transitivePeerDependencies:
@@ -3645,6 +3646,12 @@ packages:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
+
+  /nanoid@5.0.4:
+    resolution: {integrity: sha512-vAjmBf13gsmhXSgBrtIclinISzFFy22WwCYoyilZlsrRXNIHSwgFQ1bEdjRwMT3aoadeIF6HMuDRlOxzfXV8ig==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+    dev: false
 
   /natural-compare-lite@1.4.0:
     resolution: {integrity: sha512-Tj+HTDSJJKaZnfiuw+iaF9skdPpTo2GtEly5JHnWV/hfv2Qj/9RKsGISQtLh2ox3l5EAGw487hnBee0sIJ6v2g==}
