@@ -95,7 +95,7 @@ export interface UseWebphoneStore {
   localStream: Ref<HTMLNewMediaElement | null>
   remoteStream: Ref<HTMLNewMediaElement | null>
   callDuration: Ref<number>
-  callDurationTimer: Ref<null | NodeJS.Timeout>
+  callDurationTimer: Ref<null | number>
   isStatic: Ref<boolean>
   mediaRecorder: Ref<null | MediaRecorder>
   recordedChunks: Ref<Blob[]>
@@ -130,7 +130,7 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
   const incomingAudio = ref(new Audio() as HTMLNewAudioElement)
 
   const callDuration = ref<number>(0)
-  const callDurationTimer = ref<null | NodeJS.Timeout>(null)
+  const callDurationTimer = ref<null | number>(null)
   const isStatic = ref(false)
   const [isGranted, sendNotification] = useNotification()
   const mediaRecorder = ref<null | MediaRecorder>(null)

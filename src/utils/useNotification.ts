@@ -16,7 +16,7 @@ const useNotification = (
   }
 ] => {
   const isGranted = ref(Notification.permission)
-  const timeoutId = ref<null | NodeJS.Timeout>(null)
+  const timeoutId = ref<null | number>(null)
 
   onMounted(() => {
     watch(
