@@ -181,12 +181,12 @@ onMounted(() => {
 
 <template>
     <div v-show="props.show" class="tw-border-zinc-700 tw-p-2 tw-my-2">
-        <span class='tw-text-xl tw-leading-4 tw-flex tw-items-center tw-gap-2 tw-my-4'>
+        <span class='tw-text-xl tw-leading-4 tw-flex tw-items-center tw-gap-2 tw-my-2'>
             Dados do Login
         </span>
 
         <form class='tw-my-4 tw-w-full tw-flex tw-flex-col tw-gap-2' @submit.prevent="handleSubmit">
-            <div class="tw-flex tw-flex-row tw-gap-2">
+            <div class="tw-flex tw-flex-row tw-gap-2 tw-mb-0">
                 <input type="text" placeholder='Nome' v-model="authName" autocomplete="name" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
                  focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none' />
                 <input type="text" placeholder='Usuário ou Ramal' :required="true" autocomplete="tel-extension username"
@@ -198,7 +198,7 @@ onMounted(() => {
                  focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none' />
             <input type="text" placeholder='Domínio' :required="true" v-model="authDomain" autocomplete="url" class='md:tw-min-w-[304px] tw-w-full tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
                  focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none' />
-            <div class="tw-flex tw-flex-row tw-gap-2">
+            <div class="tw-flex tw-flex-row tw-gap-2 tw-mb-1">
                 <input type="number" placeholder='Porta' :required="true" v-model="authPort" autocomplete="off" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
                  focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none' />
                 <select v-model="authTransport" required
@@ -207,10 +207,10 @@ onMounted(() => {
                     <option value="tcp">Protocolo TCP</option>
                 </select>
             </div>
-            <span class='tw-text-xl tw-leading-4 tw-flex tw-items-center tw-gap-2 tw-my-4'>
+            <span class='tw-text-xl tw-leading-4 tw-flex tw-items-center tw-gap-2 tw-my-1'>
                 Saídas de Áudio
             </span>
-            <div class="tw-flex tw-flex-row tw-gap-2">
+            <div class="tw-flex tw-flex-row tw-gap-2 tw-mb-1">
                 <div v-if="!isFirefox" class="tw-flex tw-flex-row tw-justify-center tw-items-center">
                     <div
                         class="tw-bg-zinc-800 tw-h-10 tw-flex tw-justify-center tw-items-center tw-rounded-l-md tw-border-r-2 tw-border-zinc-900 tw-p-2 tw-text-xs tw-font-bold">
