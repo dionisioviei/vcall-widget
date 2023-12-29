@@ -17,7 +17,7 @@ function click2Call(event: MouseEvent) {
   // Traverse up the DOM tree to find the nearest ancestor with an href attribute (limiting at 8 to avoid infinite loops)
   while (target !== document && target && traverseCounter < 8) {
     traverseCounter++;
-    if (target instanceof Element && target.hasAttribute('href')) {
+    if (target instanceof Element && target.hasAttribute('href') && target.getAttribute('href')?.includes('tel:')) {
       event.preventDefault();
       if (webphoneStore.agentStatus !== 'Conectado') {
         return;
