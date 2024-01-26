@@ -27,7 +27,7 @@ const props = defineProps<{
 }>()
 
 function handleCall() {
-    if (!parseInt(numberToCall.value, 10)) {
+    if (!numberToCall.value.startsWith("#") && !numberToCall.value.startsWith("*") && !parseInt(numberToCall.value, 10)) {
         return;
     }
     props.startCall(numberToCall.value);
