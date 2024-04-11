@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watchEffect } from 'vue';
 import { PhPhoneCall, PhSpinner, PhSignIn, PhSignOut, PhWaveform, PhArrowsClockwise } from "@phosphor-icons/vue";
-import { getCredentials, setCredentials, setAudioDevices, getAudioDevices } from '../../store/credentials';
+import { getCredentials, setCredentials, setAudioDevices, getAudioDevices, getAutoReconnect, setAutoReconnect } from '../../store/credentials';
 
 const { authuser, domain, name, port, secret, transport } = getCredentials();
 const { ringAudioDeviceId: ringAudioDevice, voiceAudioDeviceId: voiceAudioDevice } = getAudioDevices();
+const autoReconnect = getAutoReconnect();
 
 const authUsername = ref(authuser || '');
 const authName = ref(name || '');
@@ -16,6 +17,8 @@ const authTransport = ref<'udp' | 'tcp'>(transport || 'udp');
 const isFirefox = ref<boolean>(false);
 const ringAudioDeviceId = ref(ringAudioDevice || "default");
 const voiceAudioDeviceId = ref(voiceAudioDevice || "default");
+const shouldAutoReconnect = ref(`${autoReconnect}` || 'true');
+
 const speakers = ref([{
     name: 'Padrão do Sistema',
     deviceId: 'default'
@@ -119,6 +122,10 @@ watchEffect(() => {
 })
 
 watchEffect(() => {
+    setAutoReconnect(shouldAutoReconnect.value === 'true');
+})
+
+watchEffect(() => {
     console.log('unregistering', unregistering.value, props.agentStatus);
     if (unregistering.value && props.agentStatus === 'Desconectado') {
         unregistering.value = false;
@@ -167,6 +174,7 @@ onMounted(() => {
                     askPermission();
                 } else {
                     hasMicPermission.value = true;
+                    askPermission();
                 }
             })
             .catch(error => {
@@ -193,8 +201,8 @@ onMounted(() => {
                     v-model="authUsername" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
                  focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none tw-mb-0' />
             </div>
-            <input type="password" placeholder='Senha' :required="true" v-model="authSecret" autocomplete="current-password"
-                class='md:tw-min-w-[304px] tw-w-full tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
+            <input type="password" placeholder='Senha' :required="true" v-model="authSecret"
+                autocomplete="current-password" class='md:tw-min-w-[304px] tw-w-full tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
                  focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none tw-mb-0' />
             <input type="text" placeholder='Domínio' :required="true" v-model="authDomain" autocomplete="url" class='md:tw-min-w-[304px] tw-w-full tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
                  focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none tw-mb-0' />
@@ -205,6 +213,21 @@ onMounted(() => {
                     class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none'>
                     <option value="udp">Protocolo UDP</option>
                     <option value="tcp">Protocolo TCP</option>
+                </select>
+            </div>
+            <div class="tw-flex tw-flex-row tw-gap-2 tw-mb-0">
+                <div
+                    class="tw-bg-zinc-800 tw-h-10 tw-flex tw-justify-center tw-items-center tw-rounded-l-md tw-border-r-2 tw-border-zinc-900 tw-p-2 tw-text-xs tw-font-bold">
+                    Conectar Automaticamente
+                </div>
+                <select v-model="shouldAutoReconnect" required
+                    class='md:tw-min-w-[70px] tw-w-30 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-r-md focus:tw-border-zinc-500 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none'>
+                    <option value="true" key="true">
+                        Sim
+                    </option>
+                    <option value="false" key="false">
+                        Não
+                    </option>
                 </select>
             </div>
             <span class='tw-text-xl tw-leading-4 tw-flex tw-items-center tw-gap-2 tw-my-1'>

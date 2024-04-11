@@ -18,7 +18,7 @@ import {
 } from 'vue'
 import { setCallHistory, setLastCallRecording } from './callHistory'
 import { formatTime } from '../utils/formatTime'
-import { getAudioDevices, getCredentials } from './credentials'
+import { getAudioDevices, getAutoReconnect, getCredentials } from './credentials'
 import { useNotification } from '../utils/useNotification'
 import IncomingCallIcon from '../assets/incomingcallIcon'
 
@@ -85,6 +85,7 @@ export interface UseWebphoneStore {
           muted: boolean
           onHold: boolean
           number: string
+          displayName?: string
           onSpeaker: boolean
           incallId: string
           duration: number
@@ -144,11 +145,7 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
   })
 
   const hasLastCallInfo = computed(() => {
-    return (
-      lastCallInfo.lastNumberTalked !== '' &&
-      lastCallInfo.lastCallDuration !== 0 &&
-      lastCallInfo.lastCallDirection !== ''
-    )
+    return lastCallInfo.lastNumberTalked !== '' && lastCallInfo.lastCallDirection !== ''
   })
 
   const {
@@ -203,7 +200,10 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
   })
 
   watchEffect(() => {
-    if (['incall', 'calling'].includes(extenStatus.value) && inCallStatus.value.status) {
+    if (
+      ['incall', 'calling', 'incomingcall'].includes(extenStatus.value) &&
+      inCallStatus.value.status
+    ) {
       lastCallInfo.lastNumberTalked = inCallStatus.value.status.number
       lastCallInfo.lastCallDate = new Date()
       lastCallInfo.lastCallDirection = inCallStatus.value.status.callDirection
@@ -218,7 +218,10 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
   })
 
   watchEffect(() => {
-    if (!['incall', 'calling'].includes(extenStatus.value) && hasLastCallInfo.value) {
+    if (
+      !['incall', 'calling', 'incomingcall'].includes(extenStatus.value) &&
+      hasLastCallInfo.value
+    ) {
       setCallHistory({
         number: lastCallInfo.lastNumberTalked,
         date: lastCallInfo.lastCallDate,
@@ -235,7 +238,8 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
   watch(janusStatus, () => {
     console.warn({ janusStatus: janusStatus.value })
     const { authuser, secret, domain, port, transport, name } = getCredentials()
-    if (authuser && secret && domain && janusStatus.value === 'connected') {
+    const shouldAutoReconnect = getAutoReconnect()
+    if (authuser && secret && domain && janusStatus.value === 'connected' && shouldAutoReconnect) {
       register({
         authuser,
         secret,
@@ -267,7 +271,6 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
       sendNotification({
         title: 'Webphone OFFLINE!',
         options: {
-          vibrate: 150,
           body: `Webphone perdeu conexão com o WSS`,
           requireInteraction: true,
           icon: IncomingCallIcon
@@ -306,7 +309,6 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
         sendNotification({
           title: 'Nova Chamada',
           options: {
-            vibrate: 150,
             body: `Recebendo chamada de ${inCallStatus.value.status?.number}`,
             requireInteraction: true,
             icon: IncomingCallIcon
@@ -397,7 +399,6 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
         sendNotification({
           title: 'Número não encontrado',
           options: {
-            vibrate: 150,
             body: `Verifique o número e tente novamente`,
             requireInteraction: true,
             icon: IncomingCallIcon

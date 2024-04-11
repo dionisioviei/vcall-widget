@@ -18,6 +18,7 @@ const props = defineProps<{
             muted: boolean;
             onHold: boolean;
             number: string;
+            displayName?: string;
             onSpeaker: boolean;
             incallId: string;
             duration: number;
@@ -139,7 +140,8 @@ onUnmounted(() => {
         <div v-show="props.inCallStatus.inCall && props.agentStatus === 'Recebendo chamada'" id="incomingcall">
             <span class='tw-text-sm tw-leading-6 tw-flex tw-items-center tw-gap-2 tw-my-4 tw-italic tw-text-zinc-300'>
                 <PhDotOutline :size="32" color="orange" weight="fill" />Recebendo chamada de <span class="tw-text-white">{{
-                    props.inCallStatus.status?.number }}</span>
+                    props.inCallStatus.status?.displayName ? `${props.inCallStatus.status?.displayName} ` : '' }}{{
+        props.inCallStatus.status?.number }}</span>
             </span>
             <div class='tw-flex tw-py-8 tw-gap-2 tw-w-full'>
                 <button type='button'

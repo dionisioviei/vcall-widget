@@ -26,6 +26,18 @@ function setAudioDevices({
   voiceAudioDeviceId && localStorage.setItem('@vcallwidget:voiceAudioDeviceId', voiceAudioDeviceId)
 }
 
+function setAutoReconnect(shouldAutoReconnect: boolean) {
+  localStorage.setItem('@vcallwidget:shouldAutoReconnect', `${shouldAutoReconnect}`)
+}
+
+function getAutoReconnect() {
+  const shouldAutoReconnect = localStorage.getItem('@vcallwidget:shouldAutoReconnect')
+  if (!shouldAutoReconnect) {
+    return true
+  }
+  return shouldAutoReconnect === 'true'
+}
+
 function setCredentials({
   authuser,
   secret,
@@ -111,4 +123,11 @@ function getCredentials() {
   return { name, authuser, secret, port, domain, transport }
 }
 
-export { setCredentials, getCredentials, getAudioDevices, setAudioDevices }
+export {
+  setCredentials,
+  getCredentials,
+  getAudioDevices,
+  setAudioDevices,
+  setAutoReconnect,
+  getAutoReconnect
+}
