@@ -6,13 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' wss:; media-src 'self' data: blob:;"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' wss: ws:; media-src 'self' data: blob:;"
     />
     <title>Vite App</title>
   </head>
   <body>
-    <div id="vittelgroup-vcall">
-    </div>
+    <div id="vittelgroup-vcall"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

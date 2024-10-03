@@ -8,6 +8,7 @@ const callHistory = ref<null | Array<{
     duration: string;
     date: string;
     callDirection: string | null;
+    displayName?: string;
 }>>(null);
 const maxPages = ref(0);
 const currentPage = ref(1);
@@ -108,7 +109,8 @@ watchEffect(() => {
         <div class='tw-my-4 tw-w-full tw-flex tw-flex-col tw-gap-2 tw-min-w-[425px] tw-rounded-lg'>
             <ul
                 class="scroll-smooth tw-text-zinc-200 tw-p-4 tw-max-h-[250px] tw-overflow-scroll tw-overflow-x-hidden scrollbar-thumb-zinc-700 scrollbar-track-transparent scrollbar-thin">
-                <span v-show="callHistory && callHistory.length <= 0" class="tw-italic tw-w-full tw-text-center"> Nenhuma
+                <span v-show="callHistory && callHistory.length <= 0" class="tw-italic tw-w-full tw-text-center">
+                    Nenhuma
                     chamada
                 </span>
                 <span v-show="callHistory && callHistory.length > 0 && currentPage === 1"
@@ -123,8 +125,9 @@ watchEffect(() => {
                             :class="{ 'tw-text-red-400': call.duration === '00:00:00' }">
                             <component
                                 :is="call.callDirection ? (call.callDirection === 'incoming' ? PhPhoneIncoming : PhPhoneOutgoing) : PhPhoneCall"
-                                :size="20" /> {{ call.number }} <span class="tw-italic tw-text-zinc-500">{{
-                                    call.duration
+                                :size="20" />{{ call.displayName ? `(${call.displayName}) ` : '' }}{{ call.number }}
+                            <span class="tw-italic tw-text-zinc-500">{{
+                                call.duration
                                 }}</span>
                         </span>
                         <span class="tw-text-zinc-400">

@@ -40,6 +40,7 @@ function handleSendDTMF() {
     }
     commandBtnDisabled.value = true;
     props.sendDTMF(dtmfCommand.value)
+    dtmfCommand.value = '';
     commandBtnTimer.value = window.setTimeout(() => {
         commandBtnDisabled.value = false;
     }, 1500);
@@ -92,9 +93,10 @@ onUnmounted(() => {
         <div v-show="props.inCallStatus.inCall && props.agentStatus === 'Em chamada'" id="outgoingcall">
             <span class='tw-text-sm tw-leading-6 tw-flex tw-items-center tw-gap-2 tw-my-4 tw-italic tw-text-zinc-300'>
                 <PhDotOutline :size="32" color="green" weight="fill" />Em chamada com <span class="tw-text-white">{{
-                    props.inCallStatus.status?.number }}</span> <span class="tw-text-zinc-400">{{
-        formatTime(props.callDuration || 0)
-    }}
+                    props.inCallStatus.status?.displayName ? `${props.inCallStatus.status?.displayName} ` : '' }}{{
+                        props.inCallStatus.status?.number }}</span> <span class="tw-text-zinc-400">{{
+                        formatTime(props.callDuration || 0)
+                    }}
                 </span>
             </span>
             <div class='tw-flex tw-py-8 tw-gap-2 tw-w-full'>
@@ -139,9 +141,10 @@ onUnmounted(() => {
 
         <div v-show="props.inCallStatus.inCall && props.agentStatus === 'Recebendo chamada'" id="incomingcall">
             <span class='tw-text-sm tw-leading-6 tw-flex tw-items-center tw-gap-2 tw-my-4 tw-italic tw-text-zinc-300'>
-                <PhDotOutline :size="32" color="orange" weight="fill" />Recebendo chamada de <span class="tw-text-white">{{
-                    props.inCallStatus.status?.displayName ? `${props.inCallStatus.status?.displayName} ` : '' }}{{
-        props.inCallStatus.status?.number }}</span>
+                <PhDotOutline :size="32" color="orange" weight="fill" />Recebendo chamada de <span
+                    class="tw-text-white">{{
+                        props.inCallStatus.status?.displayName ? `${props.inCallStatus.status?.displayName} ` : '' }}{{
+                        props.inCallStatus.status?.number }}</span>
             </span>
             <div class='tw-flex tw-py-8 tw-gap-2 tw-w-full'>
                 <button type='button'

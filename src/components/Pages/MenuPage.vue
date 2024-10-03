@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch, watchEffect } from 'vue';
+import { onMounted, ref, watch, watchEffect } from 'vue';
 import { PhPhoneCall, PhSignIn, PhNotebook, PhArrowLeft, PhUser } from "@phosphor-icons/vue";
 import CloseButton from '../CloseButton.vue';
 import CallPage from './CallPage.vue';
@@ -19,6 +19,7 @@ const props = defineProps<{
             onSpeaker: boolean;
             incallId: string;
             duration: number;
+            displayName?: string;
             callDirection: "incoming" | "outgoing";
         } | undefined;
     }; answer: () => void; hangup: () => void; sendDTMF: (dtmfToSend: string) => void; startCall: (numberToCall: string) => void; toggleHold: () => void; toggleMute: () => void;

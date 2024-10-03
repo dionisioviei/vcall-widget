@@ -105,6 +105,7 @@ export interface UseWebphoneStore {
     lastCallDate: Date
     lastCallDirection: string
     lastCallDuration: number
+    lastCallDisplayName?: string
   }
   hasLastCallInfo: Ref<boolean>
   agentStatus: ComputedRef<
@@ -141,7 +142,8 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
     lastNumberTalked: '',
     lastCallDate: new Date(),
     lastCallDirection: '',
-    lastCallDuration: 0
+    lastCallDuration: 0,
+    lastCallDisplayName: ''
   })
 
   const hasLastCallInfo = computed(() => {
@@ -166,7 +168,7 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
     janusEndpoint: '/janus',
     janusPort: 8189,
     janusProtocol: 'wss',
-    janusServer: 'agent.vcmpbx.com.br',
+    janusServer: 'webphone.chatmix.com.br',
     localStreamElement: localStream,
     remoteStreamElement: remoteStream,
     debug: 'minimal',
@@ -208,6 +210,7 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
       lastCallInfo.lastCallDate = new Date()
       lastCallInfo.lastCallDirection = inCallStatus.value.status.callDirection
       lastCallInfo.lastCallDuration = 0
+      lastCallInfo.lastCallDisplayName = inCallStatus.value.status.displayName || ''
     }
   })
 
@@ -226,12 +229,14 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
         number: lastCallInfo.lastNumberTalked,
         date: lastCallInfo.lastCallDate,
         duration: formatTime(lastCallInfo.lastCallDuration),
-        callDirection: lastCallInfo.lastCallDirection
+        callDirection: lastCallInfo.lastCallDirection,
+        displayName: lastCallInfo.lastCallDisplayName
       })
 
       lastCallInfo.lastNumberTalked = ''
       lastCallInfo.lastCallDuration = 0
       lastCallInfo.lastCallDirection = ''
+      lastCallInfo.lastCallDisplayName = ''
     }
   })
 

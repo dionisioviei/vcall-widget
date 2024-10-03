@@ -4,9 +4,11 @@ function setCallHistory({
   number,
   duration,
   date,
+  displayName,
   callDirection
 }: {
   number: string
+  displayName?: string
   duration: string
   date: Date
   callDirection: string | null
@@ -18,17 +20,21 @@ function setCallHistory({
     const prevCallHistory = JSON.parse(prevCallHistoryRaw)
     if (Array.isArray(prevCallHistory)) {
       newCallHistory = [
-        { number, duration, date, callDirection },
+        { number, duration, date, callDirection, displayName: displayName || undefined },
         ...prevCallHistory.filter((call, index) => index <= 2000)
       ]
     } else {
-      newCallHistory = [{ number, duration, date, callDirection }]
+      newCallHistory = [
+        { number, duration, date, callDirection, displayName: displayName || undefined }
+      ]
     }
 
     localStorage.setItem('@vcallwidget:callhistory', JSON.stringify(newCallHistory))
     return
   } else {
-    newCallHistory = [{ number, duration, date, callDirection }]
+    newCallHistory = [
+      { number, duration, date, callDirection, displayName: displayName || undefined }
+    ]
     localStorage.setItem('@vcallwidget:callhistory', JSON.stringify(newCallHistory))
     return
   }
@@ -42,6 +48,7 @@ function getCallHistory(
     number: string
     duration: string
     date: string
+    displayName?: string
     callDirection: string | null
   }>
   totalPages: number
