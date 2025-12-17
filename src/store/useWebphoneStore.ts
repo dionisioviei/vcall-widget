@@ -16,7 +16,7 @@ import {
   type ComputedRef,
   watch
 } from 'vue'
-import { setCallHistory, setLastCallRecording } from './callHistory'
+import { setCallHistory } from './callHistory'
 import { formatTime } from '../utils/formatTime'
 import { getAudioDevices, getAutoReconnect, getCredentials } from './credentials'
 import { useNotification } from '../utils/useNotification'
@@ -98,7 +98,7 @@ export interface UseWebphoneStore {
   callDuration: Ref<number>
   callDurationTimer: Ref<null | number>
   isStatic: Ref<boolean>
-  mediaRecorder: Ref<null | MediaRecorder>
+  //mediaRecorder: Ref<null | MediaRecorder>
   recordedChunks: Ref<Blob[]>
   lastCallInfo: {
     lastNumberTalked: string
@@ -135,7 +135,7 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
   const callDurationTimer = ref<null | number>(null)
   const isStatic = ref(false)
   const [isGranted, sendNotification] = useNotification()
-  const mediaRecorder = ref<null | MediaRecorder>(null)
+  //const mediaRecorder = ref<null | MediaRecorder>(null)
   const recordedChunks = ref<Blob[]>([])
 
   const lastCallInfo = reactive({
@@ -168,7 +168,7 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
     janusEndpoint: '/janus',
     janusPort: 8189,
     janusProtocol: 'wss',
-    janusServer: 'webphone.chatmix.com.br',
+    janusServer: 'agent.vcmpbx.com.br',
     localStreamElement: localStream,
     remoteStreamElement: remoteStream,
     debug: 'minimal',
@@ -331,10 +331,10 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
       extenStatus.value === 'incall' && openPopover()
     }
 
-    if (extenStatus.value === 'idle' && mediaRecorder.value) {
-      mediaRecorder.value.stop()
-      mediaRecorder.value = null
-    }
+    // if (extenStatus.value === 'idle' && mediaRecorder.value) {
+    //   mediaRecorder.value.stop()
+    //   mediaRecorder.value = null
+    // }
 
     if (extenStatus.value === 'calling') {
       // to avoid pausing before it play the audio
@@ -350,53 +350,53 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
       playCallingSound(callingAudio.value)
     }
 
-    if (extenStatus.value === 'incall' && mediaRecorder.value) {
-      mediaRecorder.value.start()
-    }
+    // if (extenStatus.value === 'incall' && mediaRecorder.value) {
+    //   mediaRecorder.value.start()
+    // }
   })
 
-  watchEffect(() => {
-    if (
-      localStream.value &&
-      remoteStream.value &&
-      mediaRecorder.value === null &&
-      extenStatus.value === 'incall'
-    ) {
-      const remoteAudioStream = remoteStream.value.captureStream
-        ? remoteStream.value.captureStream()
-        : remoteStream.value.mozCaptureStream()
-      const localAudioStream = localStream.value.captureStream
-        ? localStream.value.captureStream()
-        : localStream.value.mozCaptureStream()
+  // watchEffect(() => {
+  //   if (
+  //     localStream.value &&
+  //     remoteStream.value &&
+  //     mediaRecorder.value === null &&
+  //     extenStatus.value === 'incall'
+  //   ) {
+  //     const remoteAudioStream = remoteStream.value.captureStream
+  //       ? remoteStream.value.captureStream()
+  //       : remoteStream.value.mozCaptureStream()
+  //     const localAudioStream = localStream.value.captureStream
+  //       ? localStream.value.captureStream()
+  //       : localStream.value.mozCaptureStream()
 
-      remoteAudioStream.onaddtrack = (ev) => {
-        if (localStream.value && remoteStream.value) {
-          const audioContext = new AudioContext()
-          console.log('ON ADD TRACK', ev)
-          const localMediaStreamSource = audioContext.createMediaStreamSource(localAudioStream)
-          const remoteMediaStreamSource = audioContext.createMediaStreamSource(remoteAudioStream)
+  //     remoteAudioStream.onaddtrack = (ev) => {
+  //       if (localStream.value && remoteStream.value) {
+  //         const audioContext = new AudioContext()
+  //         console.log('ON ADD TRACK', ev)
+  //         const localMediaStreamSource = audioContext.createMediaStreamSource(localAudioStream)
+  //         const remoteMediaStreamSource = audioContext.createMediaStreamSource(remoteAudioStream)
 
-          const destination = audioContext.createMediaStreamDestination()
-          localMediaStreamSource.connect(destination)
-          remoteMediaStreamSource.connect(destination)
+  //         const destination = audioContext.createMediaStreamDestination()
+  //         localMediaStreamSource.connect(destination)
+  //         remoteMediaStreamSource.connect(destination)
 
-          const recordedStream = new MediaStream()
-          recordedStream.addTrack(destination.stream.getAudioTracks()[0])
+  //         const recordedStream = new MediaStream()
+  //         recordedStream.addTrack(destination.stream.getAudioTracks()[0])
 
-          mediaRecorder.value = new MediaRecorder(recordedStream)
-          mediaRecorder.value.ondataavailable = (event) => {
-            recordedChunks.value.push(event.data)
-          }
+  //         mediaRecorder.value = new MediaRecorder(recordedStream)
+  //         mediaRecorder.value.ondataavailable = (event) => {
+  //           recordedChunks.value.push(event.data)
+  //         }
 
-          mediaRecorder.value.onstop = () => {
-            const recordedBlob = new Blob(recordedChunks.value, { type: 'audio/webm' })
-            recordedChunks.value = []
-            setLastCallRecording(recordedBlob)
-          }
-        }
-      }
-    }
-  })
+  //         mediaRecorder.value.onstop = () => {
+  //           const recordedBlob = new Blob(recordedChunks.value, { type: 'audio/webm' })
+  //           recordedChunks.value = []
+  //           setLastCallRecording(recordedBlob)
+  //         }
+  //       }
+  //     }
+  //   }
+  // })
 
   watchEffect(() => {
     if (inCallStatus.value.hangupReason === 'Not Found') {
@@ -444,7 +444,7 @@ export const useWebphoneStore = defineStore('webphone', (): UseWebphoneStore => 
     callDuration,
     callDurationTimer,
     isStatic,
-    mediaRecorder,
+    //    mediaRecorder,
     recordedChunks,
     lastCallInfo,
     hasLastCallInfo,

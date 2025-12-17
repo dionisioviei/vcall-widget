@@ -1,304 +1,521 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watchEffect } from 'vue';
-import { PhPhoneCall, PhSpinner, PhSignIn, PhSignOut, PhWaveform, PhArrowsClockwise } from "@phosphor-icons/vue";
-import { getCredentials, setCredentials, setAudioDevices, getAudioDevices, getAutoReconnect, setAutoReconnect } from '../../store/credentials';
+import { computed, onMounted, ref, watchEffect } from 'vue'
+import {
+  PhPhoneCall,
+  PhSpinner,
+  PhSignIn,
+  PhSignOut,
+  PhWaveform,
+  PhArrowsClockwise
+} from '@phosphor-icons/vue'
+import {
+  getCredentials,
+  setCredentials,
+  setAudioDevices,
+  getAudioDevices,
+  getAutoReconnect,
+  setAutoReconnect
+} from '../../store/credentials'
 
-const { authuser, domain, name, port, secret, transport } = getCredentials();
-const { ringAudioDeviceId: ringAudioDevice, voiceAudioDeviceId: voiceAudioDevice } = getAudioDevices();
-const autoReconnect = getAutoReconnect();
+const { authuser, domain, name, port, secret, transport } = getCredentials()
+const { ringAudioDeviceId: ringAudioDevice, voiceAudioDeviceId: voiceAudioDevice } =
+  getAudioDevices()
+const autoReconnect = getAutoReconnect()
 
-const authUsername = ref(authuser || '');
-const authName = ref(name || '');
-const authSecret = ref(secret || '');
-const authDomain = ref(domain || '');
-const authPort = ref(port);
-const unregistering = ref(false);
-const authTransport = ref<'udp' | 'tcp'>(transport || 'udp');
-const isFirefox = ref<boolean>(false);
-const ringAudioDeviceId = ref(ringAudioDevice || "default");
-const voiceAudioDeviceId = ref(voiceAudioDevice || "default");
-const shouldAutoReconnect = ref(`${autoReconnect}` || 'true');
+const authUsername = ref(authuser || '')
+const authName = ref(name || '')
+const authSecret = ref(secret || '')
+const authDomain = ref(domain || '')
+const authPort = ref(port)
+const unregistering = ref(false)
+const authTransport = ref<'udp' | 'tcp'>(transport || 'udp')
+const isFirefox = ref<boolean>(false)
+const ringAudioDeviceId = ref(ringAudioDevice || 'default')
+const voiceAudioDeviceId = ref(voiceAudioDevice || 'default')
+const shouldAutoReconnect = ref(`${autoReconnect}` || 'true')
 
-const speakers = ref([{
+const speakers = ref([
+  {
     name: 'Padrão do Sistema',
     deviceId: 'default'
-}]);
-const hasMicPermission = ref(false);
-
+  }
+])
+const hasMicPermission = ref(false)
 
 interface NewMediaDevices extends MediaDevices {
-    selectAudioOutput(): Promise<MediaDeviceInfo>
+  selectAudioOutput(): Promise<MediaDeviceInfo>
 }
 
 const props = defineProps<{
-    show: boolean; register: ({ authuser, secret, domain, port, name, transport, }: {
-        authuser: string;
-        secret: string;
-        domain: string;
-        port: number;
-        name: string;
-        transport: "udp" | "tcp";
-    }) => void; unregister: () => void; agentStatus: string;
-}>();
+  show: boolean
+  colorScheme?: 'light' | 'dark'
+  register: ({
+    authuser,
+    secret,
+    domain,
+    port,
+    name,
+    transport
+  }: {
+    authuser: string
+    secret: string
+    domain: string
+    port: number
+    name: string
+    transport: 'udp' | 'tcp'
+  }) => void
+  unregister: () => void
+  agentStatus: string
+}>()
 
 function handleChooseRingAudio() {
-    if (isFirefox.value) {
-        const devices = navigator.mediaDevices as NewMediaDevices;
-        devices.selectAudioOutput().then((device) => {
-            if (device.deviceId) {
-                setAudioDevices({
-                    ringAudioDeviceId: device.deviceId
-                });
-            }
-        })
-            .catch((err) => {
-                console.error(`${err.name}: ${err.message}`);
-            });
-        return;
-    }
+  if (isFirefox.value) {
+    const devices = navigator.mediaDevices as NewMediaDevices
+    devices
+      .selectAudioOutput()
+      .then((device) => {
+        if (device.deviceId) {
+          setAudioDevices({
+            ringAudioDeviceId: device.deviceId
+          })
+        }
+      })
+      .catch((err) => {
+        console.error(`${err.name}: ${err.message}`)
+      })
+    return
+  }
 }
 
 function handleChooseVoiceAudio() {
-    if (isFirefox.value) {
-        const devices = navigator.mediaDevices as NewMediaDevices;
-        devices.selectAudioOutput().then((device) => {
-            if (device.deviceId) {
-                setAudioDevices({
-                    voiceAudioDeviceId: device.deviceId
-                });
-            }
-        })
-            .catch((err) => {
-                console.error(`${err.name}: ${err.message}`);
-            });
-        return;
-    }
+  if (isFirefox.value) {
+    const devices = navigator.mediaDevices as NewMediaDevices
+    devices
+      .selectAudioOutput()
+      .then((device) => {
+        if (device.deviceId) {
+          setAudioDevices({
+            voiceAudioDeviceId: device.deviceId
+          })
+        }
+      })
+      .catch((err) => {
+        console.error(`${err.name}: ${err.message}`)
+      })
+    return
+  }
 }
 
 function handleSubmit() {
-    setCredentials({
-        authuser: authUsername.value,
-        domain: authDomain.value,
-        name: authName.value || name || authUsername.value,
-        port: authPort.value,
-        secret: authSecret.value,
-        transport: authTransport.value
-    });
-    props.register({
-        authuser: authUsername.value,
-        domain: authDomain.value,
-        name: authName.value || name || authUsername.value,
-        port: authPort.value,
-        secret: authSecret.value,
-        transport: authTransport.value
-    });
+  setCredentials({
+    authuser: authUsername.value,
+    domain: authDomain.value,
+    name: authName.value || name || authUsername.value,
+    port: authPort.value,
+    secret: authSecret.value,
+    transport: authTransport.value
+  })
+  props.register({
+    authuser: authUsername.value,
+    domain: authDomain.value,
+    name: authName.value || name || authUsername.value,
+    port: authPort.value,
+    secret: authSecret.value,
+    transport: authTransport.value
+  })
 }
 
 function handleLogout() {
-    props.unregister();
+  props.unregister()
 }
 
 function askPermission() {
-    if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
-        navigator.mediaDevices.getUserMedia({ audio: true })
-            .then(function () {
-                hasMicPermission.value = true;
-
-            })
-            .catch(function () {
-                hasMicPermission.value = false;
-            });
-    } else {
-        hasMicPermission.value = false;
-        console.error('getUserMedia is not supported in this browser.');
-    }
+  if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then(function () {
+        hasMicPermission.value = true
+      })
+      .catch(function () {
+        hasMicPermission.value = false
+      })
+  } else {
+    hasMicPermission.value = false
+    console.error('getUserMedia is not supported in this browser.')
+  }
 }
 
 watchEffect(() => {
-    setAudioDevices({
-        voiceAudioDeviceId: voiceAudioDeviceId.value,
-        ringAudioDeviceId: ringAudioDeviceId.value
-    });
+  setAudioDevices({
+    voiceAudioDeviceId: voiceAudioDeviceId.value,
+    ringAudioDeviceId: ringAudioDeviceId.value
+  })
 })
 
 watchEffect(() => {
-    setAutoReconnect(shouldAutoReconnect.value === 'true');
+  setAutoReconnect(shouldAutoReconnect.value === 'true')
 })
 
 watchEffect(() => {
-    console.log('unregistering', unregistering.value, props.agentStatus);
-    if (unregistering.value && props.agentStatus === 'Desconectado') {
-        unregistering.value = false;
-    }
-});
+  console.log('unregistering', unregistering.value, props.agentStatus)
+  if (unregistering.value && props.agentStatus === 'Desconectado') {
+    unregistering.value = false
+  }
+})
 
 const registering = computed(() => {
-    return ['Conectando...'].includes(props.agentStatus)
-});
+  return ['Conectando...'].includes(props.agentStatus)
+})
 
 function handleOutputAudioUpdate() {
-    const shouldReload = confirm('Para atualizar as configurações de áudio, você precisa recarregar a página. Tem certeza de que deseja continuar? Clique em "OK" para recarregar ou "Cancelar" para sair.');
-    shouldReload && location.reload();
+  const shouldReload = confirm(
+    'Para atualizar as configurações de áudio, você precisa recarregar a página. Tem certeza de que deseja continuar? Clique em "OK" para recarregar ou "Cancelar" para sair.'
+  )
+  shouldReload && location.reload()
 }
 
 watchEffect(() => {
-    if (hasMicPermission.value) {
-        navigator.mediaDevices.enumerateDevices()
-            .then(devices => {
-                const outputDevices = devices.filter(device => device.kind === 'audiooutput');
-                speakers.value = outputDevices.map(device => ({
-                    name: device.label,
-                    deviceId: device.deviceId
-                }));
-                console.log({ devices });
-            })
-            .catch(error => {
-                console.error('Error enumerating devices:', error);
-            });
-    }
-});
-
-onMounted(() => {
-    if (navigator.userAgent.includes('Firefox')) {
-        isFirefox.value = true;
-    }
+  if (hasMicPermission.value) {
+    navigator.mediaDevices
+      .enumerateDevices()
+      .then((devices) => {
+        const outputDevices = devices.filter((device) => device.kind === 'audiooutput')
+        speakers.value = outputDevices.map((device) => ({
+          name: device.label,
+          deviceId: device.deviceId
+        }))
+        console.log({ devices })
+      })
+      .catch((error) => {
+        console.error('Error enumerating devices:', error)
+      })
+  }
 })
 
 onMounted(() => {
-    if ('mediaDevices' in navigator && 'enumerateDevices' in navigator.mediaDevices) {
-        navigator.mediaDevices.enumerateDevices()
-            .then(devices => {
-                const microphones = devices.filter(device => device.kind === 'audioinput');
-                const isAllDevicesEmpty = microphones.map(mic => mic.deviceId).join('');
-                if (microphones.length <= 0 || isAllDevicesEmpty === '') {
-                    askPermission();
-                } else {
-                    hasMicPermission.value = true;
-                    askPermission();
-                }
-            })
-            .catch(error => {
-                console.error('Error enumerating devices:', error);
-            });
-    } else {
-        console.error('enumerateDevices is not supported in this browser.');
-    }
-});
+  if (navigator.userAgent.includes('Firefox')) {
+    isFirefox.value = true
+  }
+})
 
+onMounted(() => {
+  if ('mediaDevices' in navigator && 'enumerateDevices' in navigator.mediaDevices) {
+    navigator.mediaDevices
+      .enumerateDevices()
+      .then((devices) => {
+        const microphones = devices.filter((device) => device.kind === 'audioinput')
+        const isAllDevicesEmpty = microphones.map((mic) => mic.deviceId).join('')
+        if (microphones.length <= 0 || isAllDevicesEmpty === '') {
+          askPermission()
+        } else {
+          hasMicPermission.value = true
+          askPermission()
+        }
+      })
+      .catch((error) => {
+        console.error('Error enumerating devices:', error)
+      })
+  } else {
+    console.error('enumerateDevices is not supported in this browser.')
+  }
+})
 </script>
 
 <template>
-    <div v-show="props.show" class="tw-border-zinc-700 tw-p-2 tw-my-2">
-        <span class='tw-text-xl tw-leading-4 tw-flex tw-items-center tw-gap-2 tw-my-2'>
-            Dados do Login
+  <div
+    v-show="props.show"
+    class="tw-p-2 tw-my-2 tw-transition-colors"
+    :class="{
+      'tw-border-zinc-700': colorScheme === 'dark',
+      'tw-border-gray-300': colorScheme === 'light'
+    }"
+  >
+    <span
+      class="tw-text-xl tw-leading-4 tw-flex tw-items-center tw-gap-2 tw-my-2 tw-transition-colors"
+      :class="{
+        'tw-text-white': colorScheme === 'dark',
+        'tw-text-gray-900': colorScheme === 'light'
+      }"
+    >
+      Dados do Login
+    </span>
+
+    <form class="tw-my-4 tw-w-full tw-flex tw-flex-col tw-gap-2" @submit.prevent="handleSubmit">
+      <div class="tw-flex tw-flex-row tw-gap-2 tw-mb-0">
+        <input
+          type="text"
+          placeholder="Nome"
+          v-model="authName"
+          autocomplete="name"
+          class="md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-rounded-md focus:tw-outline tw-outline-none tw-mb-0 tw-transition-colors"
+          :class="{
+            'tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-[#2a2b33] focus:tw-border-zinc-500 focus:tw-outline-primary focus:tw-bg-[#2a2b33':
+              colorScheme === 'dark',
+            'tw-placeholder-gray-400 tw-text-gray-900 tw-border-gray-300 tw-bg-gray-50 focus:tw-border-blue-500 focus:tw-outline-blue-500 focus:tw-bg-white':
+              colorScheme === 'light'
+          }"
+        />
+        <input
+          type="text"
+          placeholder="Usuário ou Ramal"
+          :required="true"
+          autocomplete="tel-extension username"
+          v-model="authUsername"
+          class="md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-rounded-md focus:tw-outline tw-outline-none tw-mb-0 tw-transition-colors"
+          :class="{
+            'tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-[#2a2b33] focus:tw-border-zinc-500 focus:tw-outline-primary focus:tw-bg-[#2a2b33':
+              colorScheme === 'dark',
+            'tw-placeholder-gray-400 tw-text-gray-900 tw-border-gray-300 tw-bg-gray-50 focus:tw-border-blue-500 focus:tw-outline-blue-500 focus:tw-bg-white':
+              colorScheme === 'light'
+          }"
+        />
+      </div>
+      <input
+        type="password"
+        placeholder="Senha"
+        :required="true"
+        v-model="authSecret"
+        autocomplete="current-password"
+        class="md:tw-min-w-[304px] tw-w-full tw-h-10 tw-px-2 tw-text-sm tw-rounded-md focus:tw-outline tw-outline-none tw-mb-0 tw-transition-colors"
+        :class="{
+          'tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-[#2a2b33] focus:tw-border-zinc-500 focus:tw-outline-primary focus:tw-bg-[#2a2b33':
+            colorScheme === 'dark',
+          'tw-placeholder-gray-400 tw-text-gray-900 tw-border-gray-300 tw-bg-gray-50 focus:tw-border-blue-500 focus:tw-outline-blue-500 focus:tw-bg-white':
+            colorScheme === 'light'
+        }"
+      />
+      <input
+        type="text"
+        placeholder="Domínio"
+        :required="true"
+        v-model="authDomain"
+        autocomplete="url"
+        class="md:tw-min-w-[304px] tw-w-full tw-h-10 tw-px-2 tw-text-sm tw-rounded-md focus:tw-outline tw-outline-none tw-mb-0 tw-transition-colors"
+        :class="{
+          'tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-[#2a2b33] focus:tw-border-zinc-500 focus:tw-outline-primary focus:tw-bg-[#2a2b33':
+            colorScheme === 'dark',
+          'tw-placeholder-gray-400 tw-text-gray-900 tw-border-gray-300 tw-bg-gray-50 focus:tw-border-blue-500 focus:tw-outline-blue-500 focus:tw-bg-white':
+            colorScheme === 'light'
+        }"
+      />
+      <div class="tw-flex tw-flex-row tw-gap-2 tw-mb-1">
+        <input
+          type="number"
+          placeholder="Porta"
+          :required="true"
+          v-model="authPort"
+          autocomplete="off"
+          class="md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-rounded-md focus:tw-outline tw-outline-none tw-mb-0 tw-transition-colors"
+          :class="{
+            'tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-[#2a2b33] focus:tw-border-zinc-500 focus:tw-outline-primary focus:tw-bg-[#2a2b33':
+              colorScheme === 'dark',
+            'tw-placeholder-gray-400 tw-text-gray-900 tw-border-gray-300 tw-bg-gray-50 focus:tw-border-blue-500 focus:tw-outline-blue-500 focus:tw-bg-white':
+              colorScheme === 'light'
+          }"
+        />
+        <select
+          v-model="authTransport"
+          required
+          class="md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-rounded-md focus:tw-outline tw-outline-none tw-transition-colors"
+          :class="{
+            'tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-[#2a2b33] focus:tw-border-zinc-500 focus:tw-outline-primary focus:tw-bg-[#2a2b33':
+              colorScheme === 'dark',
+            'tw-placeholder-gray-400 tw-text-gray-900 tw-border-gray-300 tw-bg-gray-50 focus:tw-border-blue-500 focus:tw-outline-blue-500 focus:tw-bg-white':
+              colorScheme === 'light'
+          }"
+        >
+          <option value="udp">Protocolo UDP</option>
+          <option value="tcp">Protocolo TCP</option>
+        </select>
+      </div>
+      <div class="tw-flex tw-flex-row tw-gap-2 tw-mb-0">
+        <div
+          class="tw-h-10 tw-flex tw-justify-center tw-items-center tw-rounded-l-md tw-border-r-2 tw-p-2 tw-text-xs tw-font-bold tw-transition-colors"
+          :class="{
+            'tw-bg-[#2a2b33] tw-border-zinc-900 tw-text-white': colorScheme === 'dark',
+            'tw-bg-gray-100 tw-border-gray-300 tw-text-gray-900': colorScheme === 'light'
+          }"
+        >
+          Conectar Automaticamente
+        </div>
+        <select
+          v-model="shouldAutoReconnect"
+          required
+          class="md:tw-min-w-[70px] tw-w-30 tw-h-10 tw-px-2 tw-text-sm tw-rounded-r-md focus:tw-outline tw-outline-none tw-transition-colors"
+          :class="{
+            'tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-[#2a2b33] focus:tw-border-zinc-500 focus:tw-outline-primary focus:tw-bg-[#2a2b33':
+              colorScheme === 'dark',
+            'tw-placeholder-gray-400 tw-text-gray-900 tw-border-gray-300 tw-bg-gray-50 focus:tw-border-blue-500 focus:tw-outline-blue-500 focus:tw-bg-white':
+              colorScheme === 'light'
+          }"
+        >
+          <option value="true" key="true">Sim</option>
+          <option value="false" key="false">Não</option>
+        </select>
+      </div>
+      <span
+        class="tw-text-xl tw-leading-4 tw-flex tw-items-center tw-gap-2 tw-my-1 tw-transition-colors"
+        :class="{
+          'tw-text-white': colorScheme === 'dark',
+          'tw-text-gray-900': colorScheme === 'light'
+        }"
+      >
+        Saídas de Áudio
+      </span>
+      <div class="tw-flex tw-flex-row tw-gap-2 tw-mb-1">
+        <div v-if="!isFirefox" class="tw-flex tw-flex-row tw-justify-center tw-items-center">
+          <div
+            class="tw-h-10 tw-flex tw-justify-center tw-items-center tw-rounded-l-md tw-border-r-2 tw-p-2 tw-text-xs tw-font-bold tw-transition-colors"
+            :class="{
+              'tw-bg-[#2a2b33] tw-border-zinc-900 tw-text-white': colorScheme === 'dark',
+              'tw-bg-gray-100 tw-border-gray-300 tw-text-gray-900': colorScheme === 'light'
+            }"
+          >
+            Toque
+          </div>
+          <select
+            v-model="ringAudioDeviceId"
+            required
+            class="md:tw-min-w-[100px] tw-w-40 tw-h-10 tw-px-2 tw-text-sm tw-rounded-r-md focus:tw-outline tw-outline-none tw-transition-colors"
+            :class="{
+              'tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-[#2a2b33] focus:tw-border-zinc-500 focus:tw-outline-primary focus:tw-bg-[#2a2b33':
+                colorScheme === 'dark',
+              'tw-placeholder-gray-400 tw-text-gray-900 tw-border-gray-300 tw-bg-gray-50 focus:tw-border-blue-500 focus:tw-outline-blue-500 focus:tw-bg-white':
+                colorScheme === 'light'
+            }"
+          >
+            <option v-for="speaker in speakers" :value="speaker.deviceId" :key="speaker.deviceId">
+              {{ speaker.name }}
+            </option>
+          </select>
+        </div>
+        <div v-if="!isFirefox" class="tw-flex tw-flex-row tw-justify-center tw-items-center">
+          <div
+            class="tw-h-10 tw-flex tw-justify-center tw-items-center tw-rounded-l-md tw-border-r-2 tw-p-2 tw-text-xs tw-font-bold tw-transition-colors"
+            :class="{
+              'tw-bg-[#2a2b33] tw-border-zinc-900 tw-text-white': colorScheme === 'dark',
+              'tw-bg-gray-100 tw-border-gray-300 tw-text-gray-900': colorScheme === 'light'
+            }"
+          >
+            Voz
+          </div>
+          <select
+            v-model="voiceAudioDeviceId"
+            required
+            class="md:tw-min-w-[100px] tw-w-40 tw-h-10 tw-px-2 tw-text-sm tw-rounded-r-md focus:tw-outline tw-outline-none tw-transition-colors"
+            :class="{
+              'tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-[#2a2b33] focus:tw-border-zinc-500 focus:tw-outline-primary focus:tw-bg-[#2a2b33':
+                colorScheme === 'dark',
+              'tw-placeholder-gray-400 tw-text-gray-900 tw-border-gray-300 tw-bg-gray-50 focus:tw-border-blue-500 focus:tw-outline-blue-500 focus:tw-bg-white':
+                colorScheme === 'light'
+            }"
+          >
+            <option v-for="speaker in speakers" :value="speaker.deviceId" :key="speaker.deviceId">
+              {{ speaker.name }}
+            </option>
+          </select>
+        </div>
+        <span
+          v-if="!isFirefox"
+          class="tw-text-xl tw-leading-6 tw-flex tw-items-center tw-gap-2 tw-my-4"
+        >
+          <button
+            v-if="!isFirefox"
+            type="button"
+            title="Atualizar"
+            aria-labelledby="Atualizar"
+            @click="handleOutputAudioUpdate"
+            class="tw-rounded-lg tw-py-1 tw-px-2 tw-h-10 tw-w-fit tw-flex tw-flex-1 tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-border-2 tw-border-transparent tw-text-green-500 focus:tw-outline-none tw-transition-all tw-duration-400 tw-ease-linear"
+            :class="{
+              'tw-bg-[#2a2b33] hover:tw-border-primary focus:tw-border-primary':
+                colorScheme === 'dark',
+              'tw-bg-gray-100 hover:tw-border-blue-500 focus:tw-border-blue-500':
+                colorScheme === 'light'
+            }"
+          >
+            <PhArrowsClockwise :size="20" />
+          </button>
         </span>
-
-        <form class='tw-my-4 tw-w-full tw-flex tw-flex-col tw-gap-2' @submit.prevent="handleSubmit">
-            <div class="tw-flex tw-flex-row tw-gap-2 tw-mb-0">
-                <input type="text" placeholder='Nome' v-model="authName" autocomplete="name" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
-                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none tw-mb-0' />
-                <input type="text" placeholder='Usuário ou Ramal' :required="true" autocomplete="tel-extension username"
-                    v-model="authUsername" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
-                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none tw-mb-0' />
-            </div>
-            <input type="password" placeholder='Senha' :required="true" v-model="authSecret"
-                autocomplete="current-password" class='md:tw-min-w-[304px] tw-w-full tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
-                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none tw-mb-0' />
-            <input type="text" placeholder='Domínio' :required="true" v-model="authDomain" autocomplete="url" class='md:tw-min-w-[304px] tw-w-full tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
-                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none tw-mb-0' />
-            <div class="tw-flex tw-flex-row tw-gap-2 tw-mb-1">
-                <input type="number" placeholder='Porta' :required="true" v-model="authPort" autocomplete="off" class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500
-                 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none tw-mb-0' />
-                <select v-model="authTransport" required
-                    class='md:tw-min-w-[100px] tw-w-52 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-md focus:tw-border-zinc-500 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none'>
-                    <option value="udp">Protocolo UDP</option>
-                    <option value="tcp">Protocolo TCP</option>
-                </select>
-            </div>
-            <div class="tw-flex tw-flex-row tw-gap-2 tw-mb-0">
-                <div
-                    class="tw-bg-zinc-800 tw-h-10 tw-flex tw-justify-center tw-items-center tw-rounded-l-md tw-border-r-2 tw-border-zinc-900 tw-p-2 tw-text-xs tw-font-bold">
-                    Conectar Automaticamente
-                </div>
-                <select v-model="shouldAutoReconnect" required
-                    class='md:tw-min-w-[70px] tw-w-30 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-r-md focus:tw-border-zinc-500 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none'>
-                    <option value="true" key="true">
-                        Sim
-                    </option>
-                    <option value="false" key="false">
-                        Não
-                    </option>
-                </select>
-            </div>
-            <span class='tw-text-xl tw-leading-4 tw-flex tw-items-center tw-gap-2 tw-my-1'>
-                Saídas de Áudio
-            </span>
-            <div class="tw-flex tw-flex-row tw-gap-2 tw-mb-1">
-                <div v-if="!isFirefox" class="tw-flex tw-flex-row tw-justify-center tw-items-center">
-                    <div
-                        class="tw-bg-zinc-800 tw-h-10 tw-flex tw-justify-center tw-items-center tw-rounded-l-md tw-border-r-2 tw-border-zinc-900 tw-p-2 tw-text-xs tw-font-bold">
-                        Toque
-                    </div>
-                    <select v-model="ringAudioDeviceId" required
-                        class='md:tw-min-w-[100px] tw-w-40 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-r-md focus:tw-border-zinc-500 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none'>
-                        <option v-for="speaker in speakers" :value="speaker.deviceId" :key="speaker.deviceId">
-                            {{ speaker.name }}
-                        </option>
-                    </select>
-                </div>
-                <div v-if="!isFirefox" class="tw-flex tw-flex-row tw-justify-center tw-items-center">
-                    <div
-                        class="tw-bg-zinc-800 tw-h-10 tw-flex tw-justify-center tw-items-center tw-rounded-l-md tw-border-r-2 tw-border-zinc-900 tw-p-2 tw-text-xs tw-font-bold">
-                        Voz
-                    </div>
-                    <select v-model="voiceAudioDeviceId" required
-                        class='md:tw-min-w-[100px] tw-w-40 tw-h-10 tw-px-2 tw-text-sm tw-placeholder-zinc-400 tw-text-zinc-100 tw-border-zinc-800 tw-bg-zinc-800 tw-rounded-r-md focus:tw-border-zinc-500 focus:tw-outline-blue-500 focus:tw-bg-zinc-800 focus:tw-outline tw-outline-none'>
-                        <option v-for="speaker in speakers" :value="speaker.deviceId" :key="speaker.deviceId">
-                            {{ speaker.name }}
-                        </option>
-                    </select>
-                </div>
-                <span v-if="!isFirefox" class='tw-text-xl tw-leading-6 tw-flex tw-items-center tw-gap-2 tw-my-4'>
-                    <button v-if="!isFirefox" type='button' title='Atualizar' aria-labelledby='Atualizar'
-                        @click="handleOutputAudioUpdate"
-                        class='tw-bg-zinc-800 tw-rounded-lg tw-py-1 tw-px-2 tw-h-10 tw-w-fit tw-flex tw-flex-1 tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-border-2 tw-border-transparent
-                hover:tw-border-blue-500 tw-text-green-500 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear'>
-                        <PhArrowsClockwise :size="20" />
-                    </button>
-                </span>
-                <button v-if="isFirefox" type='button' title='Ao Tocar' aria-labelledby='Ao Tocar'
-                    @click="handleChooseRingAudio"
-                    class='tw-bg-zinc-800 tw-rounded-lg tw-py-1 tw-w-24 tw-flex tw-flex-1 tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-border-2 tw-border-transparent
-                hover:tw-border-blue-500 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear'>
-                    <PhPhoneCall :size="20" />Ao Tocar
-                </button>
-                <button v-if="isFirefox" type='button' title='Voz' aria-labelledby='Voz' @click="handleChooseVoiceAudio"
-                    class='tw-bg-zinc-800 tw-rounded-lg tw-py-1 tw-w-24 tw-flex tw-flex-1 tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-border-2 tw-border-transparent
-                hover:tw-border-blue-500 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear'>
-                    <PhWaveform :size="20" />Voz
-                </button>
-            </div>
-            <div class='tw-flex tw-gap-2 tw-mt-2'>
-
-                <button type='submit' title='Salvar' aria-labelledby='Salvar'
-                    class='tw-bg-zinc-800 tw-rounded-lg tw-py-1 tw-w-24 tw-flex tw-flex-1 tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-border-2 tw-border-transparent
-                hover:tw-border-blue-500 hover:tw-text-green-500 disabled:hover:tw-text-zinc-100 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear disabled:tw-opacity-50 disabled:tw-border-2'
-                    :disabled="registering || props.agentStatus === 'Conectado' || props.agentStatus === 'Desconectando'">
-                    <component :is="registering ? PhSpinner : PhSignIn" :size="20"
-                        :class="{ 'tw-animate-spin': registering }" />{{ registering
-                            ? 'Registrando' :
-                            'Conectar' }}
-                </button>
-                <button type='button' title='Desconectar' aria-labelledby='Desconectar' @click="handleLogout"
-                    class='tw-bg-zinc-800 tw-rounded-lg tw-py-1 tw-w-24 tw-flex tw-flex-1 tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-border-2 tw-border-transparent
-                hover:tw-border-blue-500 hover:tw-text-red-500 disabled:hover:tw-text-zinc-100 focus:tw-outline-none focus:tw-border-blue-500 tw-transition-all tw-duration-400 tw-ease-linear disabled:tw-opacity-50 disabled:tw-border-2'
-                    :disabled="unregistering || ['Desconectado', 'Registro falhou'].includes(props.agentStatus)">
-                    <component :is="unregistering ? PhSpinner : PhSignOut" :size="20"
-                        :class="{ 'tw-animate-spin': unregistering }" />{{ unregistering
-                            ? 'Desconectando' :
-                            'Desconectar' }}
-                </button>
-            </div>
-        </form>
-    </div>
+        <button
+          v-if="isFirefox"
+          type="button"
+          title="Ao Tocar"
+          aria-labelledby="Ao Tocar"
+          @click="handleChooseRingAudio"
+          class="tw-rounded-lg tw-py-1 tw-w-24 tw-flex tw-flex-1 tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-border-2 tw-border-transparent focus:tw-outline-none tw-transition-all tw-duration-400 tw-ease-linear"
+          :class="{
+            'tw-bg-[#2a2b33] hover:tw-border-primary focus:tw-border-primary tw-text-white':
+              colorScheme === 'dark',
+            'tw-bg-gray-100 hover:tw-border-blue-500 focus:tw-border-blue-500 tw-text-gray-900':
+              colorScheme === 'light'
+          }"
+        >
+          <PhPhoneCall :size="20" />Ao Tocar
+        </button>
+        <button
+          v-if="isFirefox"
+          type="button"
+          title="Voz"
+          aria-labelledby="Voz"
+          @click="handleChooseVoiceAudio"
+          class="tw-rounded-lg tw-py-1 tw-w-24 tw-flex tw-flex-1 tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-border-2 tw-border-transparent focus:tw-outline-none tw-transition-all tw-duration-400 tw-ease-linear"
+          :class="{
+            'tw-bg-[#2a2b33] hover:tw-border-primary focus:tw-border-primary tw-text-white':
+              colorScheme === 'dark',
+            'tw-bg-gray-100 hover:tw-border-blue-500 focus:tw-border-blue-500 tw-text-gray-900':
+              colorScheme === 'light'
+          }"
+        >
+          <PhWaveform :size="20" />Voz
+        </button>
+      </div>
+      <div class="tw-flex tw-gap-2 tw-mt-2">
+        <button
+          type="submit"
+          title="Salvar"
+          aria-labelledby="Salvar"
+          class="tw-rounded-lg tw-py-1 tw-w-24 tw-flex tw-flex-1 tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-border-2 tw-border-transparent hover:tw-text-green-500 focus:tw-outline-none tw-transition-all tw-duration-400 tw-ease-linear disabled:tw-opacity-50 disabled:tw-border-2"
+          :class="{
+            'tw-bg-[#2a2b33] hover:tw-border-primary disabled:hover:tw-text-zinc-100 focus:tw-border-primary tw-text-white':
+              colorScheme === 'dark',
+            'tw-bg-gray-100 hover:tw-border-blue-500 disabled:hover:tw-text-gray-700 focus:tw-border-blue-500 tw-text-gray-900':
+              colorScheme === 'light'
+          }"
+          :disabled="
+            registering ||
+            props.agentStatus === 'Conectado' ||
+            props.agentStatus === 'Desconectando'
+          "
+        >
+          <component
+            :is="registering ? PhSpinner : PhSignIn"
+            :size="20"
+            :class="{ 'tw-animate-spin': registering }"
+          />{{ registering ? 'Registrando' : 'Conectar' }}
+        </button>
+        <button
+          type="button"
+          title="Desconectar"
+          aria-labelledby="Desconectar"
+          @click="handleLogout"
+          class="tw-rounded-lg tw-py-1 tw-w-24 tw-flex tw-flex-1 tw-flex-row tw-items-center tw-justify-center tw-gap-2 tw-border-2 tw-border-transparent hover:tw-text-red-500 focus:tw-outline-none tw-transition-all tw-duration-400 tw-ease-linear disabled:tw-opacity-50 disabled:tw-border-2"
+          :class="{
+            'tw-bg-[#2a2b33] hover:tw-border-primary disabled:hover:tw-text-zinc-100 focus:tw-border-primary tw-text-white':
+              colorScheme === 'dark',
+            'tw-bg-gray-100 hover:tw-border-blue-500 disabled:hover:tw-text-gray-700 focus:tw-border-blue-500 tw-text-gray-900':
+              colorScheme === 'light'
+          }"
+          :disabled="
+            unregistering || ['Desconectado', 'Registro falhou'].includes(props.agentStatus)
+          "
+        >
+          <component
+            :is="unregistering ? PhSpinner : PhSignOut"
+            :size="20"
+            :class="{ 'tw-animate-spin': unregistering }"
+          />{{ unregistering ? 'Desconectando' : 'Desconectar' }}
+        </button>
+      </div>
+    </form>
+  </div>
 </template>
